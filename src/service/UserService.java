@@ -1,4 +1,4 @@
-package main.service;
+package src.service;
 
 public class UserService {
 }
