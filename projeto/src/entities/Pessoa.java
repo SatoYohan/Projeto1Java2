@@ -6,17 +6,17 @@ public class Pessoa {
     private String nomeCompleto;
     private String email;
     private String senha;
-    private FuncaoPessoa funcaoPessoa;
+    private int idFuncao;
 
     public Pessoa() {
     }
 
-    public Pessoa(int codigoPessoa, String nomeCompleto, String email, String senha, FuncaoPessoa funcaoPessoa) {
+    public Pessoa(int codigoPessoa, String nomeCompleto, String email, String senha, int idFuncao) {
         this.codigoPessoa = codigoPessoa;
         this.nomeCompleto = nomeCompleto;
         this.email = email;
         this.senha = senha;
-        this.funcaoPessoa = funcaoPessoa;
+        this.idFuncao = idFuncao;
     }
 
     public int getCodigoPessoa() {
@@ -59,14 +59,12 @@ public class Pessoa {
         
     }
 
-    public FuncaoPessoa getFuncaoPessoa() {
-        return funcaoPessoa;
-        
+    public int getIdFuncao() {
+        return idFuncao;
     }
 
-    public void setFuncaoPessoa(FuncaoPessoa funcaoPessoa) {
-        this.funcaoPessoa = funcaoPessoa;
-        
+    public void setIdFuncao(int idFuncao) {
+        this.idFuncao = idFuncao;
     }
 
 }
