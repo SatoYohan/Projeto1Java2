@@ -5,26 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-public class GerenciarEventoWindow extends JFrame {
-
+public class aPrincipalWindow extends JFrame {
     private JButton botaoGerenciarEventos;
     private JButton botaoInscreverEvento;
     private JButton botaoRelatorios;
     private JButton botaoLogout;
 
-    public GerenciarEventoWindow() {
+    public PrincipalWindow() {
         setTitle("Sistema de Gerenciamento de Eventos");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,7 +23,7 @@ public class GerenciarEventoWindow extends JFrame {
 
         JPanel painel = new JPanel();
         painel.setLayout(null);
-        getContentPane().add(painel);
+        add(painel);
 
         botaoGerenciarEventos = new JButton("Gerenciar Eventos");
         botaoGerenciarEventos.setBounds(150, 50, 200, 30);
@@ -74,4 +65,5 @@ public class GerenciarEventoWindow extends JFrame {
             }
         });
     }
+
 }

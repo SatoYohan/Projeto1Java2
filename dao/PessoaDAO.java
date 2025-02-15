@@ -5,11 +5,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PessoaDAO {
-    private Connection conn;
+public class PessoaDAO {    private Connection conn;
 
     public PessoaDAO(Connection conn) {
         this.conn = conn;
+    }
+
+    public Connection getConnection() {
+        return this.conn;
     }
 
     public int cadastrar(Pessoa pessoa) throws SQLException {
@@ -103,4 +106,19 @@ public class PessoaDAO {
             BancoDados.desconectar();
         }
     }
+
+    public boolean emailExiste(String email) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement("SELECT 1 FROM pessoa WHERE email = ?");
+            st.setString(1, email);
+            rs = st.executeQuery();
+            return rs.next();
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+        }
+    }
+
 }

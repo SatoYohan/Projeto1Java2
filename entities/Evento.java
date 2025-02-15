@@ -20,8 +20,8 @@ public class Evento {
     }
 
     public Evento(int codigoEvento, String nomeEvento, String descEvento, Date dataEvento, int duracaoEvento,
-                  String localEvento, int capacidadeMaxima, StatusEvento statusEvento, CategoriaEvento categoriaEvento,
-                  float precoEvento, Administrador administrador) {
+                  String localEvento, int capacidadeMaxima, entities.StatusEvento statusEvento, CategoriaEvento categoriaEvento,
+                  float precoEvento, entities.Administrador administrador) {
         this.codigoEvento = codigoEvento;
         this.nomeEvento = nomeEvento;
         this.descEvento = descEvento;
@@ -91,7 +91,7 @@ public class Evento {
         this.capacidadeMaxima = capacidadeMaxima;
     }
 
-    public StatusEvento getStatusEvento() {
+    public entities.StatusEvento getStatusEvento() {
         return statusEvento;
     }
 

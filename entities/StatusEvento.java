@@ -7,3 +7,4 @@ public enum StatusEvento {
 	ENCERRADO,
 	CANCELADO
 }
+a

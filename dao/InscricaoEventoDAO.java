@@ -1,17 +1,12 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import entities.InscricaoEvento;
 import entities.Participante;
 import entities.Evento;
 import entities.StatusInscricao;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InscricaoEventoDAO {
 
@@ -107,6 +102,52 @@ public class InscricaoEventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
+        }
+    }
+
+    /**
+     * Conta quantas inscrições (que não estejam CANCELADAS) existem para um determinado evento.
+     */
+    public int contarInscricoesAtivasPorEvento(int codigoEvento) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT COUNT(*) AS total FROM inscricao_evento " +
+                            "WHERE codigo_evento = ? AND status_inscricao <> 'CANCELADA'"
+            );
+            st.setInt(1, codigoEvento);
+            rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+            return 0;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+        }
+    }
+
+    /**
+     * Lista todas as inscrições de um determinado participante, para que ele acompanhe suas inscrições.
+     */
+    public List<InscricaoEvento> buscarPorParticipante(int codigoParticipante) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement("SELECT * FROM inscricao_evento WHERE codigo_participante = ? ORDER BY data_inscricao");
+            st.setInt(1, codigoParticipante);
+            rs = st.executeQuery();
+
+            List<InscricaoEvento> lista = new ArrayList<>();
+            while (rs.next()) {
+                lista.add(mapearInscricao(rs));
+            }
+            return lista;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
             BancoDados.desconectar();
         }
     }
