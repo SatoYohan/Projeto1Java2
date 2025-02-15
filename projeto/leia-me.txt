@@ -1,0 +1,7 @@
+Nesse Projeto foram utilizados as ferramentas:
+- Java
+- MySql
+
+Para importar o banco, criar um banco de dados com nome projetojava e sem conteúdo no xampp phpmyadmin.
+
+Após isso, clicar em importar e selecionar o arquivo que está localizado em projeto -> download_db
