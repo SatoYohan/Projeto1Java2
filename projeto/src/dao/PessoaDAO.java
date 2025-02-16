@@ -1,6 +1,8 @@
 package dao;
 
 import entities.Pessoa;
+
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,5 +150,22 @@ public class PessoaDAO {
             BancoDados.finalizarResultSet(rs);
         }
     }*/
+    
+
+
+        public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
+            String query = "SELECT 1 FROM pessoa WHERE email = ? AND senha = ?";
+            try (Connection conn = BancoDados.conectar();
+                 PreparedStatement st = conn.prepareStatement(query)) {
+                st.setString(1, email);
+                st.setString(2, senha);
+
+                try (ResultSet rs = st.executeQuery()) {
+                    return rs.next();
+                }
+            }
+        }
+
+
 
 }

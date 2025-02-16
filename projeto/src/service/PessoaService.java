@@ -52,5 +52,12 @@ public class PessoaService {
 	    int idPessoaGerado = new PessoaDAO(BancoDados.conectar()).cadastrar(pessoa);
 	    return idPessoaGerado;
 	}
+	    
+	    
+	    public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
+	        
+	        return new PessoaDAO(BancoDados.conectar()).validarCredenciais(email, senha);
+	    }
+	
 	
 }

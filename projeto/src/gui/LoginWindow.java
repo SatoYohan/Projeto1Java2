@@ -1,26 +1,32 @@
 package gui;
 
-import java.awt.EventQueue;
+import javax.swing.*;
+import service.PessoaService;
+
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class LoginWindow extends JFrame {
     private JTextField campoEmail;
     private JPasswordField campoSenha;
     private JButton botaoEntrar;
     private JButton botaoCadastrar;
+    private PessoaService pessoaService;
 
     public LoginWindow() {
+        this.iniciarComponentes();
+        this.pessoaService = new PessoaService(); // A classe de serviço
+    }
+
+    private boolean validarLogin(String email, String senha) throws SQLException, IOException {
+        // Chama o serviço para verificar o login no banco
+        return pessoaService.validarCredenciais(email, senha);
+    }
+
+    private void iniciarComponentes() {
         setTitle("Login");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,22 +60,43 @@ public class LoginWindow extends JFrame {
         botaoCadastrar.setBounds(200, 150, 100, 30);
         painel.add(botaoCadastrar);
 
+        // Ação do botão "Entrar"
         botaoEntrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String email = campoEmail.getText();
-                String senha = new String(campoSenha.getPassword());
-                JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado para: " + email);
-                new PrincipalWindow().setVisible(true);
-                dispose();
+                try {
+                    String email = campoEmail.getText();
+                    String senha = new String(campoSenha.getPassword());
+
+                    try {
+						if (validarLogin(email, senha)) {
+						    // Login válido, abre a janela principal
+						    JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado para: " + email);
+						    new PrincipalWindow().setVisible(true);
+						    dispose(); // Fecha a janela de login
+						} else {
+						    // Senha ou email incorretos
+						    JOptionPane.showMessageDialog(LoginWindow.this, 
+						        "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+						}
+					} catch (HeadlessException | IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(LoginWindow.this, 
+					        "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 
+        // Ação do botão "Cadastrar"
         botaoCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new CadastroWindow().setVisible(true);
-                dispose();
+                dispose(); // Fecha a janela de login e abre a de cadastro
             }
         });
     }
