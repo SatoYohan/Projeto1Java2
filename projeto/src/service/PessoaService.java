@@ -49,6 +49,11 @@ public class PessoaService {
 		
 		/*Connection conn = BancoDados.conectar();
 		return new PessoaDAO(conn).cadastrar(pessoa);*/
+		
+	   /* if (new PessoaDAO(BancoDados.conectar()).emailJaCadastrado(pessoa.getEmail())) {
+	        throw new SQLException("O e-mail já está cadastrado. Por favor, use outro.");
+	    }*/
+	    
 	    int idPessoaGerado = new PessoaDAO(BancoDados.conectar()).cadastrar(pessoa);
 	    return idPessoaGerado;
 	}
@@ -81,6 +86,9 @@ public class PessoaService {
 	            }
 	        }
 	    }
-
+	    
+	    public boolean isEmailCadastrado(String email) throws SQLException, IOException {
+	        return new PessoaDAO(BancoDados.conectar()).emailJaCadastrado(email);
+	    }
 	
 }

@@ -53,6 +53,12 @@ public class CadastroWindow extends JFrame {
     	
 		try {
 			
+			if (campoNome.getText().isEmpty() || campoEmail.getText().isEmpty() || campoSenha.getPassword().length == 0 || caixaTipoUsuario.getSelectedItem() == null) {
+	            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+	            return; 
+	        }
+
+	        
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			Pessoa pessoa = new Pessoa();
 			
@@ -62,6 +68,11 @@ public class CadastroWindow extends JFrame {
 			
             // Verificar o tipo de usuário e definir o ID da função (Administrador = 1, Participante = 2)
             String tipoUsuario = (String) caixaTipoUsuario.getSelectedItem();
+            
+	        if (tipoUsuario == null || tipoUsuario.isEmpty()) {
+	            JOptionPane.showMessageDialog(this, "Por favor, selecione um tipo de usuário.", "Erro", JOptionPane.ERROR_MESSAGE);
+	            return;
+	        }
             int idFuncao = 0; // Valor padrão para erro ou caso não seja definido
             if ("Administrador".equals(tipoUsuario)) {
                 idFuncao = 2;
@@ -69,6 +80,25 @@ public class CadastroWindow extends JFrame {
                 idFuncao = 1;
             }
             pessoa.setIdFuncao(idFuncao);
+            
+            if (pessoaService.isEmailCadastrado(pessoa.getEmail())) {
+                JOptionPane.showMessageDialog(CadastroWindow.this,
+                        "Esse e-mail já está sendo usado.",
+                        "Erro no Cadastro", JOptionPane.ERROR_MESSAGE);
+                return; 
+            }
+            
+            if (idFuncao == 2) { 
+                if (campoCargo.getText().isEmpty() || campoDataContratacao.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } else if (idFuncao == 1) { 
+                if (campoDataNascimento.getText().isEmpty() || campoCpf.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return; 
+                }
+            }
 
 //            pessoaService.cadastrarUsuario(pessoa);
             int idPessoaGerado = pessoaService.cadastrarUsuario(pessoa);
@@ -78,18 +108,17 @@ public class CadastroWindow extends JFrame {
 			
 			
             if (idFuncao == 2) {
-            	
+            		
             	Administrador administrador = new Administrador();
             	
             	administrador.setCodigoPessoa(pessoa.getCodigoPessoa());
             	administrador.setCargo(campoCargo.getText());
             	administrador.setDataContratacao(new java.sql.Date(sdf.parse(campoDataContratacao.getText()).getTime()));
             	
-
-            	
             	administradorService.cadastrar(administrador);
                
             } else { // Para Participante
+            	
             	
             	Participante participante = new Participante();
             	
@@ -97,11 +126,12 @@ public class CadastroWindow extends JFrame {
             	participante.setDataNascimento(new java.sql.Date(sdf.parse(campoDataNascimento.getText()).getTime()));
             	participante.setCpf(campoCpf.getText());
 
-            	
             	participanteService.cadastrar(participante);
             }
 
-            
+            JOptionPane.showMessageDialog(CadastroWindow.this,
+                    "Cadastro realizado com sucesso para o e-mail " + this.campoEmail.getText() + ".",
+                    "Cadastro", JOptionPane.INFORMATION_MESSAGE);
             // Após o cadastro, pode redirecionar para a tela de login
             new LoginWindow().setVisible(true);
             dispose();

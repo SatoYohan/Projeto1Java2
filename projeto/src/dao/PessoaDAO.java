@@ -150,6 +150,17 @@ public class PessoaDAO {
             BancoDados.finalizarResultSet(rs);
         }
     }*/
+	    public boolean emailJaCadastrado(String email) throws SQLException {
+	        String sql = "SELECT COUNT(*) FROM pessoa WHERE email = ?";
+	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+	            stmt.setString(1, email);
+	            ResultSet rs = stmt.executeQuery();
+	            if (rs.next()) {
+	                return rs.getInt(1) > 0; // Se o contador for maior que 0, o e-mail já está cadastrado
+	            }
+	        }
+	        return false;
+	    }
     
 
 

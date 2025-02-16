@@ -88,7 +88,7 @@ public class LoginWindow extends JFrame {
                 } catch (HeadlessException | SQLException | IOException ex) {
                     ex.printStackTrace();
                     JOptionPane.showMessageDialog(LoginWindow.this,
-                            "Erro ao tentar realizar login. Verifique sua conexão ou os dados informados.",
+                            "Erro ao tentar realizar login. Verifique a conexão.",
                             "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
