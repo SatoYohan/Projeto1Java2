@@ -81,7 +81,7 @@ public class CadastroWindow extends JFrame {
             	
             	Administrador administrador = new Administrador();
             	
-            	administrador.setCodigoPessoa(idPessoaGerado);
+            	administrador.setCodigoPessoa(pessoa.getCodigoPessoa());
             	administrador.setCargo(campoCargo.getText());
             	administrador.setDataContratacao(new java.sql.Date(sdf.parse(campoDataContratacao.getText()).getTime()));
             	

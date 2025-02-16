@@ -165,6 +165,24 @@ public class PessoaDAO {
                 }
             }
         }
+        
+        public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException {
+            String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
+            PreparedStatement st = conn.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            if (rs.next()) {
+                int idFuncao = rs.getInt("id_funcao");
+                rs.close();
+                st.close();
+                return idFuncao;
+            } else {
+                rs.close();
+                st.close();
+                return -1;
+            }
+        }
+
 
 
 

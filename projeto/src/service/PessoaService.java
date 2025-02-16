@@ -58,6 +58,29 @@ public class PessoaService {
 	        
 	        return new PessoaDAO(BancoDados.conectar()).validarCredenciais(email, senha);
 	    }
-	
+	    
+	    public int obterFuncaoPorCredenciais(String email, String senha) throws SQLException, IOException {
+	        String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
+	        try (Connection conn = BancoDados.conectar();
+	             PreparedStatement st = conn.prepareStatement(sql)) {
+
+	            // Verifique se os valores não estão nulos ou vazios antes de setar
+	            if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
+	                throw new SQLException("Email ou senha não fornecidos.");
+	            }
+
+	            st.setString(1, email);  // Coloca o valor do email
+	            st.setString(2, senha);  // Coloca o valor da senha
+
+	            try (ResultSet rs = st.executeQuery()) {
+	                if (rs.next()) {
+	                    return rs.getInt("id_funcao");
+	                } else {
+	                    return -1;  // Caso não encontre a função
+	                }
+	            }
+	        }
+	    }
+
 	
 }

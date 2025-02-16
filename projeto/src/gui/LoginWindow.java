@@ -68,25 +68,28 @@ public class LoginWindow extends JFrame {
                     String email = campoEmail.getText();
                     String senha = new String(campoSenha.getPassword());
 
-                    try {
-						if (validarLogin(email, senha)) {
-						    // Login válido, abre a janela principal
-						    JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado para: " + email);
-						    new PrincipalWindowAdministrador().setVisible(true);
-						    dispose(); // Fecha a janela de login
-						} else {
-						    // Senha ou email incorretos
-						    JOptionPane.showMessageDialog(LoginWindow.this, 
-						        "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
-						}
-					} catch (HeadlessException | IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-                } catch (SQLException ex) {
+                    System.out.println(email);
+                    System.out.println(senha);
+                    int idFuncao = pessoaService.obterFuncaoPorCredenciais(email, senha);
+
+                    if (idFuncao == 2) {
+                        JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado como Administrador " + email + ".");
+                        new PrincipalWindowAdministrador().setVisible(true);
+                        dispose();
+                    } else if (idFuncao == 1) {
+                        JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado como Participante " + email + ".");
+                        new PrincipalWindowParticipante().setVisible(true);
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(LoginWindow.this,
+                                "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } catch (HeadlessException | SQLException | IOException ex) {
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(LoginWindow.this, 
-					        "Email ou senha incorretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(LoginWindow.this,
+                            "Erro ao tentar realizar login. Verifique sua conexão ou os dados informados.",
+                            "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
