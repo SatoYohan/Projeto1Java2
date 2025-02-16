@@ -1,20 +1,13 @@
 package gui;
 
-import java.awt.EventQueue;
+import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
+import java.text.ParseException;
 
 public class CadastroWindow extends JFrame {
+
     private JTextField campoNome;
     private JTextField campoEmail;
     private JPasswordField campoSenha;
@@ -22,16 +15,29 @@ public class CadastroWindow extends JFrame {
     private JButton botaoCadastrar;
     private JButton botaoVoltar;
 
+    // -- Campos específicos para Administrador
+    private JLabel labelCargo;
+    private JTextField campoCargo;
+    private JLabel labelDataContratacao;
+    private JFormattedTextField campoDataContratacao; // Mask para data
+
+    // -- Campos específicos para Participante
+    private JLabel labelDataNascimento;
+    private JFormattedTextField campoDataNascimento;  // Mask para data
+    private JLabel labelCpf;
+    private JFormattedTextField campoCpf;             // Mask para CPF
+
     public CadastroWindow() {
         setTitle("Cadastro de Usuário");
-        setSize(400, 300);
+        setSize(450, 420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel painel = new JPanel();
         painel.setLayout(null);
-        add(painel);
+        setContentPane(painel);
 
+        // -------------------- CAMPOS BÁSICOS --------------------
         JLabel rotuloNome = new JLabel("Nome Completo:");
         rotuloNome.setBounds(50, 30, 120, 25);
         painel.add(rotuloNome);
@@ -65,27 +71,131 @@ public class CadastroWindow extends JFrame {
         caixaTipoUsuario.setBounds(180, 150, 200, 25);
         painel.add(caixaTipoUsuario);
 
+        // -------------------- MÁSCARAS --------------------
+        // Máscara para data (dd/MM/yyyy)
+        MaskFormatter maskData = null;
+        // Máscara para CPF (###.###.###-##)
+        MaskFormatter maskCpf = null;
+
+        try {
+            maskData = new MaskFormatter("##/##/####");
+            maskData.setPlaceholderCharacter('_');
+
+            maskCpf = new MaskFormatter("###.###.###-##");
+            maskCpf.setPlaceholderCharacter('_');
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        // -------------------- CAMPOS ADMINISTRADOR --------------------
+        labelCargo = new JLabel("Cargo:");
+        labelCargo.setBounds(50, 190, 120, 25);
+        painel.add(labelCargo);
+
+        campoCargo = new JTextField();
+        campoCargo.setBounds(180, 190, 200, 25);
+        painel.add(campoCargo);
+
+        labelDataContratacao = new JLabel("Data Contratação:");
+        labelDataContratacao.setBounds(50, 230, 120, 25);
+        painel.add(labelDataContratacao);
+
+        campoDataContratacao = new JFormattedTextField(maskData);
+        campoDataContratacao.setBounds(180, 230, 200, 25);
+        painel.add(campoDataContratacao);
+
+        // -------------------- CAMPOS PARTICIPANTE --------------------
+        labelDataNascimento = new JLabel("Data Nascimento:");
+        labelDataNascimento.setBounds(50, 190, 120, 25);
+        painel.add(labelDataNascimento);
+
+        campoDataNascimento = new JFormattedTextField(maskData);
+        campoDataNascimento.setBounds(180, 190, 200, 25);
+        painel.add(campoDataNascimento);
+
+        labelCpf = new JLabel("CPF:");
+        labelCpf.setBounds(50, 230, 120, 25);
+        painel.add(labelCpf);
+
+        campoCpf = new JFormattedTextField(maskCpf);
+        campoCpf.setBounds(180, 230, 200, 25);
+        painel.add(campoCpf);
+
+        // Inicialmente, escondemos os campos específicos
+        exibirCamposAdministrador(false);
+        exibirCamposParticipante(false);
+
+        // -------------------- AÇÃO DO COMBOBOX --------------------
+        caixaTipoUsuario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tipo = (String) caixaTipoUsuario.getSelectedItem();
+                if ("Administrador".equals(tipo)) {
+                    exibirCamposAdministrador(true);
+                    exibirCamposParticipante(false);
+                } else {
+                    exibirCamposAdministrador(false);
+                    exibirCamposParticipante(true);
+                }
+            }
+        });
+
+        // -------------------- BOTÕES --------------------
         botaoCadastrar = new JButton("Cadastrar");
-        botaoCadastrar.setBounds(50, 200, 120, 30);
+        botaoCadastrar.setBounds(50, 280, 120, 30);
         painel.add(botaoCadastrar);
 
         botaoVoltar = new JButton("Voltar");
-        botaoVoltar.setBounds(200, 200, 120, 30);
+        botaoVoltar.setBounds(200, 280, 120, 30);
         painel.add(botaoVoltar);
 
+        // Ação do botão "Cadastrar"
         botaoCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // Campos básicos
                 String nome = campoNome.getText();
                 String email = campoEmail.getText();
                 String senha = new String(campoSenha.getPassword());
                 String tipoUsuario = (String) caixaTipoUsuario.getSelectedItem();
-                JOptionPane.showMessageDialog(CadastroWindow.this, "Usuário cadastrado: " + nome);
+
+                // Dependendo do tipo, pegamos os campos específicos
+                if ("Administrador".equals(tipoUsuario)) {
+                    String cargo = campoCargo.getText();
+                    String dataContratacao = campoDataContratacao.getText(); // Ex.: "12/05/2025"
+
+                    // -> Aqui você faria a validação e conversão da dataContratacao
+                    // -> Chamaria o service/DAO para salvar no banco
+                    JOptionPane.showMessageDialog(CadastroWindow.this,
+                        "Administrador cadastrado!\n" +
+                        "Nome: " + nome + "\n" +
+                        "Email: " + email + "\n" +
+                        "Cargo: " + cargo + "\n" +
+                        "Data Contratação: " + dataContratacao
+                    );
+
+                } else { // Participante
+                    String dataNascimento = campoDataNascimento.getText();  // Ex.: "15/09/1990"
+                    String cpf = campoCpf.getText();                        // Ex.: "123.456.789-01"
+
+                    // -> Aqui você faria a validação e conversão da dataNascimento
+                    // -> Chamaria o service/DAO para salvar no banco
+                    JOptionPane.showMessageDialog(CadastroWindow.this,
+                        "Participante cadastrado!\n" +
+                        "Nome: " + nome + "\n" +
+                        "Email: " + email + "\n" +
+                        "Data Nascimento: " + dataNascimento + "\n" +
+                        "CPF: " + cpf
+                    );
+                }
+
+                // Após cadastrar, volte para a tela de login, se esse for o fluxo
                 new LoginWindow().setVisible(true);
                 dispose();
             }
         });
 
+        // Botão Voltar
         botaoVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -93,5 +203,25 @@ public class CadastroWindow extends JFrame {
                 dispose();
             }
         });
+    }
+
+    /**
+     * Exibe ou oculta os campos de Administrador.
+     */
+    private void exibirCamposAdministrador(boolean visivel) {
+        labelCargo.setVisible(visivel);
+        campoCargo.setVisible(visivel);
+        labelDataContratacao.setVisible(visivel);
+        campoDataContratacao.setVisible(visivel);
+    }
+
+    /**
+     * Exibe ou oculta os campos de Participante.
+     */
+    private void exibirCamposParticipante(boolean visivel) {
+        labelDataNascimento.setVisible(visivel);
+        campoDataNascimento.setVisible(visivel);
+        labelCpf.setVisible(visivel);
+        campoCpf.setVisible(visivel);
     }
 }
