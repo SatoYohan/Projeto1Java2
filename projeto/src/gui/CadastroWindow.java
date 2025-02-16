@@ -66,7 +66,7 @@ public class CadastroWindow extends JFrame {
         rotuloTipoUsuario.setBounds(50, 150, 120, 25);
         painel.add(rotuloTipoUsuario);
 
-        String[] tiposUsuarios = {"Administrador", "Participante"};
+        String[] tiposUsuarios = {"", "Administrador", "Participante"};
         caixaTipoUsuario = new JComboBox<>(tiposUsuarios);
         caixaTipoUsuario.setBounds(180, 150, 200, 25);
         painel.add(caixaTipoUsuario);
