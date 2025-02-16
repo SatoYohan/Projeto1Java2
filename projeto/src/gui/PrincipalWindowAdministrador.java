@@ -9,13 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-public class PrincipalWindow extends JFrame {
+public class PrincipalWindowAdministrador extends JFrame {
     private JButton botaoGerenciarEventos;
-    private JButton botaoInscreverEvento;
     private JButton botaoRelatorios;
     private JButton botaoLogout;
 
-    public PrincipalWindow() {
+    public PrincipalWindowAdministrador() {
         setTitle("Sistema de Gerenciamento de Eventos");
         setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,15 +22,11 @@ public class PrincipalWindow extends JFrame {
 
         JPanel painel = new JPanel();
         painel.setLayout(null);
-        add(painel);
+        getContentPane().add(painel);
 
         botaoGerenciarEventos = new JButton("Gerenciar Eventos");
-        botaoGerenciarEventos.setBounds(150, 50, 200, 30);
+        botaoGerenciarEventos.setBounds(150, 98, 200, 30);
         painel.add(botaoGerenciarEventos);
-
-        botaoInscreverEvento = new JButton("Inscrever-se em Evento");
-        botaoInscreverEvento.setBounds(150, 100, 200, 30);
-        painel.add(botaoInscreverEvento);
 
         botaoRelatorios = new JButton("Relatórios");
         botaoRelatorios.setBounds(150, 150, 200, 30);
@@ -42,14 +37,6 @@ public class PrincipalWindow extends JFrame {
         painel.add(botaoLogout);
 
         botaoGerenciarEventos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new InscricaoEventoWindow().setVisible(true);
-                dispose();
-            }
-        });
-
-        botaoInscreverEvento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new InscricaoEventoWindow().setVisible(true);

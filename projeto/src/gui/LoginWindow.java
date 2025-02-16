@@ -72,7 +72,7 @@ public class LoginWindow extends JFrame {
 						if (validarLogin(email, senha)) {
 						    // Login válido, abre a janela principal
 						    JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado para: " + email);
-						    new PrincipalWindow().setVisible(true);
+						    new PrincipalWindowAdministrador().setVisible(true);
 						    dispose(); // Fecha a janela de login
 						} else {
 						    // Senha ou email incorretos
