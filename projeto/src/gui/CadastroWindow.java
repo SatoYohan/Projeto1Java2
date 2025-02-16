@@ -2,9 +2,20 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
+
+import entities.Administrador;
+import entities.Participante;
+import entities.Pessoa;
+import service.AdministradorService;
+import service.ParticipanteService;
+import service.PessoaService;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class CadastroWindow extends JFrame {
 
@@ -14,6 +25,9 @@ public class CadastroWindow extends JFrame {
     private JComboBox<String> caixaTipoUsuario;
     private JButton botaoCadastrar;
     private JButton botaoVoltar;
+    private PessoaService pessoaService;
+    private ParticipanteService participanteService;
+    private AdministradorService administradorService;
 
     // -- Campos específicos para Administrador
     private JLabel labelCargo;
@@ -28,6 +42,80 @@ public class CadastroWindow extends JFrame {
     private JFormattedTextField campoCpf;             // Mask para CPF
 
     public CadastroWindow() {
+    	
+    	this.iniciarComponentes();
+        this.pessoaService = new PessoaService();
+        this.participanteService = new ParticipanteService();
+        this.administradorService = new AdministradorService();
+    }
+
+    private void cadastrarUsuario() throws SQLException, IOException {
+    	
+		try {
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			Pessoa pessoa = new Pessoa();
+			
+			pessoa.setNomeCompleto(this.campoNome.getText());
+			pessoa.setEmail(this.campoEmail.getText());
+			pessoa.setSenha(new String(campoSenha.getPassword()));
+			
+            // Verificar o tipo de usuário e definir o ID da função (Administrador = 1, Participante = 2)
+            String tipoUsuario = (String) caixaTipoUsuario.getSelectedItem();
+            int idFuncao = 0; // Valor padrão para erro ou caso não seja definido
+            if ("Administrador".equals(tipoUsuario)) {
+                idFuncao = 2;
+            } else if ("Participante".equals(tipoUsuario)) {
+                idFuncao = 1;
+            }
+            pessoa.setIdFuncao(idFuncao);
+
+//            pessoaService.cadastrarUsuario(pessoa);
+            int idPessoaGerado = pessoaService.cadastrarUsuario(pessoa);
+            pessoa.setCodigoPessoa(idPessoaGerado);
+			
+			//aluno.setDataIngresso(new java.sql.Date(sdf.parse(this.ftxtDataIngresso.getText()).getTime()));
+			
+			
+            if (idFuncao == 2) {
+            	
+            	Administrador administrador = new Administrador();
+            	
+            	administrador.setCodigoPessoa(idPessoaGerado);
+            	administrador.setCargo(campoCargo.getText());
+            	administrador.setDataContratacao(new java.sql.Date(sdf.parse(campoDataContratacao.getText()).getTime()));
+            	
+
+            	
+            	administradorService.cadastrar(administrador);
+               
+            } else { // Para Participante
+            	
+            	Participante participante = new Participante();
+            	
+            	participante.setCodigoPessoa(pessoa.getCodigoPessoa());
+            	participante.setDataNascimento(new java.sql.Date(sdf.parse(campoDataNascimento.getText()).getTime()));
+            	participante.setCpf(campoCpf.getText());
+
+            	
+            	participanteService.cadastrar(participante);
+            }
+
+            
+            // Após o cadastro, pode redirecionar para a tela de login
+            new LoginWindow().setVisible(true);
+            dispose();
+            
+		} catch (ParseException ee) {
+			
+			System.out.println("Erro: Data não informada!");
+		} catch (Exception ee) {
+			
+			System.out.println("Erro: " + ee.getMessage());
+		}
+    }
+    
+    private void iniciarComponentes() {
         setTitle("Cadastro de Usuário");
         setSize(450, 420);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,6 +124,7 @@ public class CadastroWindow extends JFrame {
         JPanel painel = new JPanel();
         painel.setLayout(null);
         setContentPane(painel);
+        
 
         // -------------------- CAMPOS BÁSICOS --------------------
         JLabel rotuloNome = new JLabel("Nome Completo:");
@@ -153,6 +242,14 @@ public class CadastroWindow extends JFrame {
         botaoCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	try {
+					cadastrarUsuario();
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+        	/*	
                 // Campos básicos
                 String nome = campoNome.getText();
                 String email = campoEmail.getText();
@@ -192,6 +289,7 @@ public class CadastroWindow extends JFrame {
                 // Após cadastrar, volte para a tela de login, se esse for o fluxo
                 new LoginWindow().setVisible(true);
                 dispose();
+                */
             }
         });
 
@@ -203,8 +301,9 @@ public class CadastroWindow extends JFrame {
                 dispose();
             }
         });
-    }
+        
 
+    }
     /**
      * Exibe ou oculta os campos de Administrador.
      */
@@ -224,4 +323,6 @@ public class CadastroWindow extends JFrame {
         labelCpf.setVisible(visivel);
         campoCpf.setVisible(visivel);
     }
+    
+
 }

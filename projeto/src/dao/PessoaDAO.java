@@ -5,26 +5,57 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PessoaDAO {
-    private Connection conn;
+public class PessoaDAO {   
+	private Connection conn;
 
     public PessoaDAO(Connection conn) {
         this.conn = conn;
     }
 
+    public Connection getConnection() {
+        return this.conn;
+    }
+
     public int cadastrar(Pessoa pessoa) throws SQLException {
-        PreparedStatement st = null;
+/*        PreparedStatement st = null;
         try {
-            st = conn.prepareStatement("INSERT INTO pessoa (codigo_pessoa, nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?, ?)");
-            st.setInt(1, pessoa.getCodigoPessoa());
-            st.setString(2, pessoa.getNomeCompleto());
-            st.setString(3, pessoa.getEmail());
-            st.setString(4, pessoa.getSenha());
-            st.setInt(5, pessoa.getIdFuncao());
+            st = conn.prepareStatement("INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)");
+            
+            st.setString(1, pessoa.getNomeCompleto());
+            st.setString(2, pessoa.getEmail());
+            st.setString(3, pessoa.getSenha());
+            st.setInt(4, pessoa.getIdFuncao());
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.desconectar();
+        }
+*/
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                "INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)", 
+                Statement.RETURN_GENERATED_KEYS); // Indica que queremos os IDs gerados
+
+            st.setString(1, pessoa.getNomeCompleto());
+            st.setString(2, pessoa.getEmail());
+            st.setString(3, pessoa.getSenha());
+            st.setInt(4, pessoa.getIdFuncao());
+            st.executeUpdate();
+
+            // Obter o ID gerado
+            rs = st.getGeneratedKeys();
+            if (rs.next()) {
+                return rs.getInt(1); // Retorna o ID gerado
+            }
+            return -1; // Se não houver ID gerado, retorna um valor inválido
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
+            if (rs != null) {
+                rs.close();
+            }
         }
     }
 
@@ -103,4 +134,19 @@ public class PessoaDAO {
             BancoDados.desconectar();
         }
     }
+
+/*    public boolean emailExiste(String email) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement("SELECT 1 FROM pessoa WHERE email = ?");
+            st.setString(1, email);
+            rs = st.executeQuery();
+            return rs.next();
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+        }
+    }*/
+
 }

@@ -96,7 +96,7 @@ CREATE TABLE `inscricao_evento` (
 CREATE TABLE `participante` (
   `codigo_pessoa` int(11) NOT NULL,
   `data_nascimento` date NOT NULL,
-  `cpf` varchar(11) NOT NULL
+  `cpf` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
