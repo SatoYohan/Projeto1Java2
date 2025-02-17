@@ -89,12 +89,12 @@ public class CadastroWindow extends JFrame {
             }
             
             if (idFuncao == 2) { 
-                if (campoCargo.getText().isEmpty() || campoDataContratacao.getText().isEmpty()) {
+                if (campoCargo.getText().isEmpty() || campoDataContratacao.getText().trim().equals("__/__/____")) {
                     JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
             } else if (idFuncao == 1) { 
-                if (campoDataNascimento.getText().isEmpty() || campoCpf.getText().isEmpty()) {
+                if (campoDataNascimento.getText().trim().equals("__/__/____") || campoCpf.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
                     return; 
                 }
@@ -139,6 +139,7 @@ public class CadastroWindow extends JFrame {
 		} catch (ParseException ee) {
 			
 			System.out.println("Erro: Data não informada!");
+			return;
 		} catch (Exception ee) {
 			
 			System.out.println("Erro: " + ee.getMessage());

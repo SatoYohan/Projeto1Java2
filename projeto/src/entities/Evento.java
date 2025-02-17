@@ -1,14 +1,23 @@
 package entities;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
+/**
+ * Representa um evento com data/hora (coluna DATETIME no banco).
+ * Usamos java.sql.Timestamp para armazenar data e hora completas.
+ */
 public class Evento {
 
-	private int codigoEvento;
+    private int codigoEvento;
     private String nomeEvento;
     private String descEvento;
-    private Date dataEvento;
-    private int duracaoEvento;
+    /**
+     * dataEvento: Armazena data e hora completas (yyyy-MM-dd HH:mm:ss).
+     * Exemplo de valor no banco: 2025-12-31 15:45:00
+     */
+    private Timestamp dataEvento;
+
+    private int duracaoEvento;     // em horas
     private String localEvento;
     private int capacidadeMaxima;
     private StatusEvento statusEvento;
@@ -19,9 +28,11 @@ public class Evento {
     public Evento() {
     }
 
-    public Evento(int codigoEvento, String nomeEvento, String descEvento, Date dataEvento, int duracaoEvento,
-                  String localEvento, int capacidadeMaxima, StatusEvento statusEvento, CategoriaEvento categoriaEvento,
-                  float precoEvento, Administrador administrador) {
+    public Evento(int codigoEvento, String nomeEvento, String descEvento,
+                  Timestamp dataEvento, int duracaoEvento, String localEvento,
+                  int capacidadeMaxima, StatusEvento statusEvento,
+                  CategoriaEvento categoriaEvento, float precoEvento,
+                  Administrador administrador) {
         this.codigoEvento = codigoEvento;
         this.nomeEvento = nomeEvento;
         this.descEvento = descEvento;
@@ -59,11 +70,15 @@ public class Evento {
         this.descEvento = descEvento;
     }
 
-    public Date getDataEvento() {
+    public Timestamp getDataEvento() {
         return dataEvento;
     }
 
-    public void setDataEvento(Date dataEvento) {
+    /**
+     * Define data e hora do evento (Timestamp).
+     * Exemplo: 2025-12-31 15:45:00
+     */
+    public void setDataEvento(Timestamp dataEvento) {
         this.dataEvento = dataEvento;
     }
 

@@ -62,7 +62,7 @@ public class InscricaoEventoWindow extends JFrame {
         botaoVoltar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new PrincipalWindow().setVisible(true);
+                new PrincipalWindowParticipante().setVisible(true);
                 dispose();
             }
         });

@@ -1,13 +1,10 @@
 package gui;
 
-import java.awt.EventQueue;
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class PrincipalWindowAdministrador extends JFrame {
     private JButton botaoGerenciarEventos;
@@ -39,7 +36,12 @@ public class PrincipalWindowAdministrador extends JFrame {
         botaoGerenciarEventos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new InscricaoEventoWindow().setVisible(true);
+                try {
+					new GerenciarEventoWindow().setVisible(true);
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 dispose();
             }
         });
@@ -52,5 +54,4 @@ public class PrincipalWindowAdministrador extends JFrame {
             }
         });
     }
-
 }

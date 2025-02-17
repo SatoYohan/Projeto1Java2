@@ -20,15 +20,24 @@ public class EventoDAO {
     public EventoDAO(Connection conn) {
         this.conn = conn;
     }
+    
+    public Connection getConnection() {
+        return this.conn;
+    }
 
     public int cadastrar(Evento evento) throws SQLException {
         PreparedStatement st = null;
-        try {
-            st = conn.prepareStatement("insert into evento (nome_evento, desc_evento, data_evento, duracao_evento, local_evento, capacidade_maxima, status_evento, categoria_evento, preco_evento, codigo_administrador) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
+        try {
+            st = conn.prepareStatement(
+                "INSERT INTO evento (" +
+                "nome_evento, desc_evento, data_evento, duracao_evento, local_evento, " +
+                "capacidade_maxima, status_evento, categoria_evento, preco_evento, codigo_organizador" +
+                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            );
             st.setString(1, evento.getNomeEvento());
             st.setString(2, evento.getDescEvento());
-            st.setDate(3, evento.getDataEvento());
+            st.setTimestamp(3, evento.getDataEvento());
             st.setInt(4, evento.getDuracaoEvento());
             st.setString(5, evento.getLocalEvento());
             st.setInt(6, evento.getCapacidadeMaxima());
@@ -38,11 +47,16 @@ public class EventoDAO {
             st.setInt(10, evento.getAdministrador().getCodigoPessoa());
 
             return st.executeUpdate();
+        } catch (SQLException e) {
+            // Trate as exceções adequadamente (log, rethrow, etc.)
+            throw new SQLException("Erro no cadastrar evento: " + e.getMessage(), e);
         } finally {
+            // Fechar o Statement após a execução
             BancoDados.finalizarStatement(st);
             BancoDados.desconectar();
         }
     }
+
 
     public List<Evento> buscarTodos() throws SQLException {
         PreparedStatement st = null;
@@ -62,7 +76,6 @@ public class EventoDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
         }
     }
 
@@ -81,8 +94,7 @@ public class EventoDAO {
             return null;
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
+            BancoDados.finalizarResultSet(rs);        
         }
     }
 
@@ -93,7 +105,7 @@ public class EventoDAO {
 
             st.setString(1, evento.getNomeEvento());
             st.setString(2, evento.getDescEvento());
-            st.setDate(3, evento.getDataEvento());
+            st.setTimestamp(3, evento.getDataEvento());
             st.setInt(4, evento.getDuracaoEvento());
             st.setString(5, evento.getLocalEvento());
             st.setInt(6, evento.getCapacidadeMaxima());
@@ -106,7 +118,6 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
@@ -119,17 +130,15 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
     private Evento mapearEvento(ResultSet rs) throws SQLException {
         Evento evento = new Evento();
-
         evento.setCodigoEvento(rs.getInt("codigo_evento"));
         evento.setNomeEvento(rs.getString("nome_evento"));
         evento.setDescEvento(rs.getString("desc_evento"));
-        evento.setDataEvento(rs.getDate("data_evento"));
+        evento.setDataEvento(rs.getTimestamp("data_evento"));
         evento.setDuracaoEvento(rs.getInt("duracao_evento"));
         evento.setLocalEvento(rs.getString("local_evento"));
         evento.setCapacidadeMaxima(rs.getInt("capacidade_maxima"));
@@ -137,10 +146,11 @@ public class EventoDAO {
         evento.setCategoriaEvento(CategoriaEvento.valueOf(rs.getString("categoria_evento")));
         evento.setPrecoEvento(rs.getFloat("preco_evento"));
 
-        Administrador administrador = new Administrador();
-        administrador.setCodigoPessoa(rs.getInt("codigo_administrador"));
-        evento.setAdministrador(administrador);
+        Administrador admin = new Administrador();
+        admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+        evento.setAdministrador(admin);
 
         return evento;
     }
+
 }

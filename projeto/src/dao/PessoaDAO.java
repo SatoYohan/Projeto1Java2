@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PessoaDAO {   
-	private Connection conn;
+    private Connection conn;
 
     public PessoaDAO(Connection conn) {
         this.conn = conn;
@@ -19,20 +19,6 @@ public class PessoaDAO {
     }
 
     public int cadastrar(Pessoa pessoa) throws SQLException {
-/*        PreparedStatement st = null;
-        try {
-            st = conn.prepareStatement("INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)");
-            
-            st.setString(1, pessoa.getNomeCompleto());
-            st.setString(2, pessoa.getEmail());
-            st.setString(3, pessoa.getSenha());
-            st.setInt(4, pessoa.getIdFuncao());
-            return st.executeUpdate();
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
-        }
-*/
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
@@ -54,7 +40,7 @@ public class PessoaDAO {
             return -1; // Se não houver ID gerado, retorna um valor inválido
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
+            BancoDados.desconectar();  // Desconectar após a execução
             if (rs != null) {
                 rs.close();
             }
@@ -81,7 +67,7 @@ public class PessoaDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
+            BancoDados.desconectar();  // Desconectar após a execução
         }
     }
 
@@ -105,7 +91,7 @@ public class PessoaDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
+            BancoDados.desconectar();  // Desconectar após a execução
         }
     }
 
@@ -121,7 +107,7 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
+            BancoDados.desconectar();  // Desconectar após a execução
         }
     }
 
@@ -133,68 +119,53 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
+            BancoDados.desconectar();  // Desconectar após a execução
         }
     }
 
-/*    public boolean emailExiste(String email) throws SQLException {
-        PreparedStatement st = null;
-        ResultSet rs = null;
-        try {
-            st = conn.prepareStatement("SELECT 1 FROM pessoa WHERE email = ?");
-            st.setString(1, email);
-            rs = st.executeQuery();
-            return rs.next();
-        } finally {
-            BancoDados.finalizarStatement(st);
-            BancoDados.finalizarResultSet(rs);
-        }
-    }*/
-	    public boolean emailJaCadastrado(String email) throws SQLException {
-	        String sql = "SELECT COUNT(*) FROM pessoa WHERE email = ?";
-	        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-	            stmt.setString(1, email);
-	            ResultSet rs = stmt.executeQuery();
-	            if (rs.next()) {
-	                return rs.getInt(1) > 0; // Se o contador for maior que 0, o e-mail já está cadastrado
-	            }
-	        }
-	        return false;
-	    }
-    
-
-
-        public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
-            String query = "SELECT 1 FROM pessoa WHERE email = ? AND senha = ?";
-            try (Connection conn = BancoDados.conectar();
-                 PreparedStatement st = conn.prepareStatement(query)) {
-                st.setString(1, email);
-                st.setString(2, senha);
-
-                try (ResultSet rs = st.executeQuery()) {
-                    return rs.next();
-                }
-            }
-        }
-        
-        public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException {
-            String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
-            PreparedStatement st = conn.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-
+    public boolean emailJaCadastrado(String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM pessoa WHERE email = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                int idFuncao = rs.getInt("id_funcao");
-                rs.close();
-                st.close();
-                return idFuncao;
-            } else {
-                rs.close();
-                st.close();
-                return -1;
+                return rs.getInt(1) > 0; // Se o contador for maior que 0, o e-mail já está cadastrado
             }
         }
+        return false;
+    }
 
+    public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
+        String query = "SELECT 1 FROM pessoa WHERE email = ? AND senha = ?";
+        try (Connection conn = BancoDados.conectar();
+             PreparedStatement st = conn.prepareStatement(query)) {
+            st.setString(1, email);
+            st.setString(2, senha);
 
+            try (ResultSet rs = st.executeQuery()) {
+                return rs.next();
+            }
+        } finally {
+            BancoDados.desconectar();  // Desconectar após a execução
+        }
+    }
 
+    public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException {
+        String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
+        PreparedStatement st = conn.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
 
+        if (rs.next()) {
+            int idFuncao = rs.getInt("id_funcao");
+            rs.close();
+            st.close();
+            BancoDados.desconectar();  // Desconectar após a execução
+            return idFuncao;
+        } else {
+            rs.close();
+            st.close();
+            BancoDados.desconectar();  // Desconectar após a execução
+            return -1;
+        }
+    }
 }
