@@ -48,10 +48,10 @@ public class EventoDAO {
 
             return st.executeUpdate();
         } catch (SQLException e) {
-            // Trate as exceções adequadamente (log, rethrow, etc.)
+            
             throw new SQLException("Erro no cadastrar evento: " + e.getMessage(), e);
         } finally {
-            // Fechar o Statement após a execução
+            
             BancoDados.finalizarStatement(st);
             BancoDados.desconectar();
         }
@@ -76,6 +76,7 @@ public class EventoDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
+            BancoDados.desconectar();
         }
     }
 
@@ -94,7 +95,8 @@ public class EventoDAO {
             return null;
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.finalizarResultSet(rs);        
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.desconectar();
         }
     }
 
@@ -118,6 +120,7 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
         }
     }
 
@@ -130,6 +133,7 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
         }
     }
 

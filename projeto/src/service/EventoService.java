@@ -33,20 +33,20 @@ public class EventoService {
 
     }
 
-    /**
-     * Listar todos os eventos.
-     */
- /*   public List<Evento> listarEventos() throws SQLException {
-        return eventoDAO.buscarTodos();
+
+    public List<Evento> listarEventos() throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		return new EventoDAO(conn).buscarTodos();
+
     }
 
-    /**
-     * Buscar um evento pelo código (ID).
-     
+
+//     * Buscar um evento pelo código (ID).
+ /*    
     public Evento buscarEventoPorCodigo(int codigoEvento) throws SQLException {
         return eventoDAO.buscarPorCodigo(codigoEvento);
     }
-
+*/
     /**
      * Atualizar um evento existente.
      

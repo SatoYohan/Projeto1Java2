@@ -18,11 +18,11 @@ public class LoginWindow extends JFrame {
 
     public LoginWindow() {
         this.iniciarComponentes();
-        this.pessoaService = new PessoaService(); // A classe de serviço
+        this.pessoaService = new PessoaService();
     }
 
     private boolean validarLogin(String email, String senha) throws SQLException, IOException {
-        // Chama o serviço para verificar o login no banco
+        
         return pessoaService.validarCredenciais(email, senha);
     }
 
@@ -60,7 +60,6 @@ public class LoginWindow extends JFrame {
         botaoCadastrar.setBounds(200, 150, 100, 30);
         painel.add(botaoCadastrar);
 
-        // Ação do botão "Entrar"
         botaoEntrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,7 +69,7 @@ public class LoginWindow extends JFrame {
 
                     System.out.println(email);
                     System.out.println(senha);
-                    int idFuncao = pessoaService.obterFuncaoPorCredenciais(email, senha);
+                    int idFuncao = pessoaService.buscarFuncaoPorEmailSenha(email, senha);
 
                     if (idFuncao == 2) {
                         JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado como Administrador " + email + ".");
@@ -94,12 +93,12 @@ public class LoginWindow extends JFrame {
             }
         });
 
-        // Ação do botão "Cadastrar"
+
         botaoCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new CadastroWindow().setVisible(true);
-                dispose(); // Fecha a janela de login e abre a de cadastro
+                dispose();
             }
         });
     }

@@ -24,7 +24,7 @@ public class PessoaDAO {
         try {
             st = conn.prepareStatement(
                 "INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)", 
-                Statement.RETURN_GENERATED_KEYS); // Indica que queremos os IDs gerados
+                Statement.RETURN_GENERATED_KEYS);
 
             st.setString(1, pessoa.getNomeCompleto());
             st.setString(2, pessoa.getEmail());
@@ -32,15 +32,15 @@ public class PessoaDAO {
             st.setInt(4, pessoa.getIdFuncao());
             st.executeUpdate();
 
-            // Obter o ID gerado
+           
             rs = st.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt(1); // Retorna o ID gerado
+                return rs.getInt(1); 
             }
-            return -1; // Se não houver ID gerado, retorna um valor inválido
+            return -1; 
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();  // Desconectar após a execução
+            BancoDados.desconectar();
             if (rs != null) {
                 rs.close();
             }
@@ -67,7 +67,7 @@ public class PessoaDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();  // Desconectar após a execução
+            BancoDados.desconectar(); 
         }
     }
 
@@ -91,7 +91,7 @@ public class PessoaDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();  // Desconectar após a execução
+            BancoDados.desconectar();
         }
     }
 
@@ -107,7 +107,7 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();  // Desconectar após a execução
+            BancoDados.desconectar(); 
         }
     }
 
@@ -119,7 +119,7 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();  // Desconectar após a execução
+            BancoDados.desconectar(); 
         }
     }
 
@@ -139,7 +139,7 @@ public class PessoaDAO {
 
     public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
         String query = "SELECT 1 FROM pessoa WHERE email = ? AND senha = ?";
-        try (Connection conn = BancoDados.conectar();
+        try (
              PreparedStatement st = conn.prepareStatement(query)) {
             st.setString(1, email);
             st.setString(2, senha);
@@ -155,9 +155,29 @@ public class PessoaDAO {
     public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException {
         String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
         PreparedStatement st = conn.prepareStatement(sql);
-        ResultSet rs = st.executeQuery();
+   
 
-        if (rs.next()) {
+        if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
+            throw new SQLException("Email ou senha não fornecidos.");
+        }
+        
+        st.setString(1, email);  // Coloca o valor do email
+        st.setString(2, senha);  // Coloca o valor da senha
+        
+        try (ResultSet rs = st.executeQuery()) {
+            if (rs.next()) {
+            	
+                return rs.getInt("id_funcao");
+            } else {
+            	
+                return -1;  // Caso não encontre a função
+            } 
+            
+        } finally {
+        	BancoDados.desconectar();
+        }
+        
+/*        if (rs.next()) {
             int idFuncao = rs.getInt("id_funcao");
             rs.close();
             st.close();
@@ -168,6 +188,32 @@ public class PessoaDAO {
             st.close();
             BancoDados.desconectar();  // Desconectar após a execução
             return -1;
+        }*/
+    }
+    
+ /*   public int obterFuncaoPorCredenciais(String email, String senha) throws SQLException, IOException {
+        String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
+        try (
+             PreparedStatement st = conn.prepareStatement(sql)) {
+
+            // Verifique se os valores não estão nulos ou vazios antes de setar
+            if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
+                throw new SQLException("Email ou senha não fornecidos.");
+            }
+
+            st.setString(1, email);  // Coloca o valor do email
+            st.setString(2, senha);  // Coloca o valor da senha
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                	BancoDados.desconectar();
+                    return rs.getInt("id_funcao");
+                } else {
+                	BancoDados.desconectar();
+                    return -1;  // Caso não encontre a função
+                }
+            }
         }
     }
+    */
 }

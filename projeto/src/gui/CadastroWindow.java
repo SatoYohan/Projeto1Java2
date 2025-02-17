@@ -132,7 +132,7 @@ public class CadastroWindow extends JFrame {
             JOptionPane.showMessageDialog(CadastroWindow.this,
                     "Cadastro realizado com sucesso para o e-mail " + this.campoEmail.getText() + ".",
                     "Cadastro", JOptionPane.INFORMATION_MESSAGE);
-            // Após o cadastro, pode redirecionar para a tela de login
+            
             new LoginWindow().setVisible(true);
             dispose();
             
@@ -280,47 +280,6 @@ public class CadastroWindow extends JFrame {
 					e1.printStackTrace();
 				}
 
-        	/*	
-                // Campos básicos
-                String nome = campoNome.getText();
-                String email = campoEmail.getText();
-                String senha = new String(campoSenha.getPassword());
-                String tipoUsuario = (String) caixaTipoUsuario.getSelectedItem();
-
-                // Dependendo do tipo, pegamos os campos específicos
-                if ("Administrador".equals(tipoUsuario)) {
-                    String cargo = campoCargo.getText();
-                    String dataContratacao = campoDataContratacao.getText(); // Ex.: "12/05/2025"
-
-                    // -> Aqui você faria a validação e conversão da dataContratacao
-                    // -> Chamaria o service/DAO para salvar no banco
-                    JOptionPane.showMessageDialog(CadastroWindow.this,
-                        "Administrador cadastrado!\n" +
-                        "Nome: " + nome + "\n" +
-                        "Email: " + email + "\n" +
-                        "Cargo: " + cargo + "\n" +
-                        "Data Contratação: " + dataContratacao
-                    );
-
-                } else { // Participante
-                    String dataNascimento = campoDataNascimento.getText();  // Ex.: "15/09/1990"
-                    String cpf = campoCpf.getText();                        // Ex.: "123.456.789-01"
-
-                    // -> Aqui você faria a validação e conversão da dataNascimento
-                    // -> Chamaria o service/DAO para salvar no banco
-                    JOptionPane.showMessageDialog(CadastroWindow.this,
-                        "Participante cadastrado!\n" +
-                        "Nome: " + nome + "\n" +
-                        "Email: " + email + "\n" +
-                        "Data Nascimento: " + dataNascimento + "\n" +
-                        "CPF: " + cpf
-                    );
-                }
-
-                // Após cadastrar, volte para a tela de login, se esse for o fluxo
-                new LoginWindow().setVisible(true);
-                dispose();
-                */
             }
         });
 
@@ -335,9 +294,7 @@ public class CadastroWindow extends JFrame {
         
 
     }
-    /**
-     * Exibe ou oculta os campos de Administrador.
-     */
+    
     private void exibirCamposAdministrador(boolean visivel) {
         labelCargo.setVisible(visivel);
         campoCargo.setVisible(visivel);
@@ -345,9 +302,6 @@ public class CadastroWindow extends JFrame {
         campoDataContratacao.setVisible(visivel);
     }
 
-    /**
-     * Exibe ou oculta os campos de Participante.
-     */
     private void exibirCamposParticipante(boolean visivel) {
         labelDataNascimento.setVisible(visivel);
         campoDataNascimento.setVisible(visivel);
