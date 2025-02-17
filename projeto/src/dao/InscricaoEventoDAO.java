@@ -10,6 +10,9 @@ import java.util.List;
 
 import entities.InscricaoEvento;
 import entities.Participante;
+import entities.StatusEvento;
+import entities.Administrador;
+import entities.CategoriaEvento;
 import entities.Evento;
 import entities.StatusInscricao;
 
@@ -129,4 +132,66 @@ public class InscricaoEventoDAO {
 
         return inscricao;
     }
+    
+    private InscricaoEvento mapearInscricaoComEvento(ResultSet rs) throws SQLException {
+        InscricaoEvento inscricao = new InscricaoEvento();
+        inscricao.setCodigoInscricao(rs.getInt("codigo_inscricao"));
+
+        Participante participante = new Participante();
+        participante.setCodigoPessoa(rs.getInt("codigo_participante"));
+        inscricao.setParticipante(participante);
+
+        Evento evento = new Evento();
+        evento.setCodigoEvento(rs.getInt("codigo_evento"));
+        evento.setNomeEvento(rs.getString("nome_evento"));
+        evento.setDescEvento(rs.getString("desc_evento"));
+        evento.setDataEvento(rs.getTimestamp("data_evento"));
+        evento.setDuracaoEvento(rs.getInt("duracao_evento"));
+        evento.setLocalEvento(rs.getString("local_evento"));
+        evento.setCapacidadeMaxima(rs.getInt("capacidade_maxima"));
+        evento.setStatusEvento(StatusEvento.valueOf(rs.getString("status_evento")));
+        evento.setCategoriaEvento(CategoriaEvento.valueOf(rs.getString("categoria_evento")));
+        evento.setPrecoEvento(rs.getFloat("preco_evento"));
+
+        Administrador admin = new Administrador();
+        admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+        evento.setAdministrador(admin);
+
+        inscricao.setEvento(evento);
+
+        inscricao.setDataInscricao(rs.getDate("data_inscricao"));
+        inscricao.setStatusInscricao(StatusInscricao.valueOf(rs.getString("status_inscricao")));
+        inscricao.setPresencaConfirmada(rs.getBoolean("presenca_confirmada"));
+
+        return inscricao;
+    }
+
+    
+    public List<InscricaoEvento> buscarEventosPorParticipante(int codigoParticipante) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                "SELECT i.*, e.* " +
+                "FROM inscricao_evento i " +
+                "INNER JOIN evento e ON i.codigo_evento = e.codigo_evento " +
+                "WHERE i.codigo_participante = ? and e.data_evento > NOW()"
+            );
+            st.setInt(1, codigoParticipante);
+            rs = st.executeQuery();
+
+            List<InscricaoEvento> listaInscricoes = new ArrayList<>();
+            while (rs.next()) {
+                InscricaoEvento inscricao = mapearInscricaoComEvento(rs);
+                listaInscricoes.add(inscricao);
+            }
+
+            return listaInscricoes;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.desconectar();
+        }
+    }
+
 }

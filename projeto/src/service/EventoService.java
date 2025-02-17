@@ -26,8 +26,8 @@ public class EventoService {
      */
     public boolean cadastrarEvento(Evento evento) throws SQLException, IOException {
         // Força o astatus FECHADO conforme a regra
+    	BancoDados.conectar();
         evento.setStatusEvento(StatusEvento.FECHADO);
-        BancoDados.conectar();
         boolean result = new EventoDAO(BancoDados.conectar()).cadastrar(evento) > 0;
         return result;
 

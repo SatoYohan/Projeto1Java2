@@ -129,9 +129,11 @@ public class PessoaDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return rs.getInt(1) > 0; // Se o contador for maior que 0, o e-mail já está cadastrado
+            	BancoDados.desconectar();
+                return rs.getInt(1) > 0; 
             }
         }
+        BancoDados.desconectar();
         return false;
     }
 
