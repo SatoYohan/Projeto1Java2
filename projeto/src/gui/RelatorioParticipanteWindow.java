@@ -60,22 +60,22 @@ public class RelatorioParticipanteWindow extends JFrame {
 			modelo.setRowCount(0);
 			
 			Participante participante = new Participante();
-			List<Evento> eventos = this.inscricaoEventoService.buscarEventosPorParticipante(participante.getCodigoPessoa());
+			List<InscricaoEvento> eventos = this.inscricaoEventoService.buscarEventosPorParticipante(participante.getCodigoPessoa());
 			
-			for (Evento evento : eventos) {
+			for (InscricaoEvento inscricaoEvento : eventos) {
 				
 				modelo.addRow(new Object[] {
 						
-						evento.getCodigoEvento(),
-						evento.getNomeEvento(),
-						evento.getDescEvento(),
-						evento.getDataEvento(),
-						evento.getDuracaoEvento(),
-						evento.getCapacidadeMaxima(),
-						evento.getStatusEvento(),
-						evento.getCategoriaEvento(),
-						evento.getPrecoEvento(),
-						evento.getAdministrador().getCodigoPessoa()
+						inscricaoEvento.getEvento().getCodigoEvento(),
+						inscricaoEvento.getEvento().getNomeEvento(),
+						inscricaoEvento.getEvento().getDescEvento(),
+						inscricaoEvento.getEvento().getDataEvento(),
+						inscricaoEvento.getEvento().getDuracaoEvento(),
+						inscricaoEvento.getEvento().getCapacidadeMaxima(),
+						inscricaoEvento.getEvento().getStatusEvento(),
+						inscricaoEvento.getEvento().getCategoriaEvento(),
+						inscricaoEvento.getEvento().getPrecoEvento(),
+						inscricaoEvento.getEvento().getAdministrador().getCodigoPessoa()
 				});
 			}
 		} catch (SQLException | IOException e) {

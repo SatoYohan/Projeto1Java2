@@ -45,6 +45,12 @@ public class PrincipalWindowParticipante extends JFrame {
         painel.add(botaoLogout);
         
         JButton botaoCancelarConfirmar = new JButton("Cancelar Inscrição / Confirmar Presença");
+        botaoCancelarConfirmar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new CancelarInscricaoWindow().setVisible(true);
+                dispose();
+        	}
+        });
         botaoCancelarConfirmar.setFont(new Font("Tahoma", Font.PLAIN, 11));
         botaoCancelarConfirmar.setBounds(136, 95, 231, 46);
         painel.add(botaoCancelarConfirmar);

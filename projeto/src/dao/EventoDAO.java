@@ -103,7 +103,7 @@ public class EventoDAO {
     public int atualizar(Evento evento) throws SQLException {
         PreparedStatement st = null;
         try {
-            st = conn.prepareStatement("update evento set nome_evento = ?, desc_evento = ?, data_evento = ?, duracao_evento = ?, local_evento = ?, capacidade_maxima = ?, status_evento = ?, categoria_evento = ?, preco_evento = ?, codigo_administrador = ? where codigo_evento = ?");
+            st = conn.prepareStatement("update evento set nome_evento = ?, desc_evento = ?, data_evento = ?, duracao_evento = ?, local_evento = ?, capacidade_maxima = ?, status_evento = ?, categoria_evento = ?, preco_evento = ?, codigo_organizador = ? where codigo_evento = ?");
 
             st.setString(1, evento.getNomeEvento());
             st.setString(2, evento.getDescEvento());
@@ -152,7 +152,7 @@ public class EventoDAO {
 
         //Administrador admin = new Administrador();
         //admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
-        evento.getAdministrador().setCodigoPessoa(rs.getInt("codigo_pessoa"));
+        evento.getAdministrador().setCodigoPessoa(rs.getInt("codigo_organizador"));
 
         return evento;
     }

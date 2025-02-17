@@ -16,8 +16,19 @@ public class InscricaoEventoService {
     public InscricaoEventoService() {
 
     }
+    
+	public void cadastrar(InscricaoEvento inscricaoEvento) throws SQLException, IOException {
 
-    public List<Evento> buscarEventosPorParticipante(int codigoParticipante) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+		new InscricaoEventoDAO(conn).cadastrar(inscricaoEvento);
+	}
+
+    public boolean verificarInscricaoExistente(int codigoParticipante, int codigoEvento) throws SQLException, IOException {
+        return new InscricaoEventoDAO(BancoDados.conectar()).verificarInscricaoExistente(codigoParticipante, codigoEvento);
+        
+    }
+	
+    public List<InscricaoEvento> buscarEventosPorParticipante(int codigoParticipante) throws SQLException, IOException {
         
     		Connection conn = null;
     		if (conn == null || conn.isClosed()) {
@@ -32,7 +43,25 @@ public class InscricaoEventoService {
                 eventos.add(inscricao.getEvento());
             }
 
-            return eventos;
+            return inscricoes;
         
     }
+	
+	public void confirmarPresenca(int codigoPessoa, int codigoEvento) throws SQLException, IOException {
+		
+		Connection conn = BancoDados.conectar();
+	    new InscricaoEventoDAO(conn).confirmarPresenca(codigoPessoa, codigoEvento);
+	}
+
+	public void cancelarInscricao(int codigoPessoa, int codigoEvento) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+	    new InscricaoEventoDAO(conn).cancelarInscricao(codigoPessoa, codigoEvento);
+
+	}
+	
+	public String buscarStatusEvento(int codigoEvento) throws SQLException, IOException {
+		Connection conn = BancoDados.conectar();
+	    return new InscricaoEventoDAO(conn).buscarStatusEvento(codigoEvento);
+
+	}
 }

@@ -1,5 +1,6 @@
 package dao;
 
+import entities.Participante;
 import entities.Pessoa;
 
 import java.io.IOException;
@@ -18,6 +19,8 @@ public class PessoaDAO {
         return this.conn;
     }
 
+    
+    
     public int cadastrar(Pessoa pessoa) throws SQLException {
         PreparedStatement st = null;
         ResultSet rs = null;
@@ -216,4 +219,45 @@ public class PessoaDAO {
         }
     }
     */
+    
+    public Participante buscarParticipantePorEmailSenha(String email, String senha) throws SQLException, IOException {
+        Connection conn = BancoDados.conectar();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT p.codigo_pessoa, p.nome_completo, p.email, p.senha, pa.data_nascimento, pa.cpf " +
+                         "FROM pessoa p " +
+                         "JOIN participante pa ON p.codigo_pessoa = pa.codigo_pessoa " +
+                         "WHERE p.email = ? AND p.senha = ?";
+
+            st = conn.prepareStatement(sql);
+            st.setString(1, email);
+            st.setString(2, senha);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Pessoa pessoa = new Pessoa();
+                pessoa.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+                pessoa.setNomeCompleto(rs.getString("nome_completo"));
+                pessoa.setEmail(rs.getString("email"));
+                pessoa.setSenha(rs.getString("senha"));
+
+                Participante participante = new Participante();
+                participante.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+                participante.setDataNascimento(rs.getDate("data_nascimento"));
+                participante.setCpf(rs.getString("cpf"));
+                participante.setPessoa(pessoa);
+
+                return participante;
+            }
+            return null;
+
+        } finally {
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
+        }
+    }
+
 }

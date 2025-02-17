@@ -3,6 +3,7 @@ package service;
 
 import dao.BancoDados;
 import dao.PessoaDAO;
+import entities.Participante;
 import entities.Pessoa;
 import utils.PasswordUtils;
 
@@ -58,6 +59,7 @@ public class PessoaService {
 	    return idPessoaGerado;
 	}
 	    
+	
 	    
 	    public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
 	        
@@ -72,5 +74,11 @@ public class PessoaService {
 	    public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException, IOException {
 	        return new PessoaDAO(BancoDados.conectar()).buscarFuncaoPorEmailSenha(email, senha);
 	    }
+	    
+	    public Participante buscarParticipantePorEmailSenha(String email, String senha) throws SQLException, IOException {
+
+	        return new PessoaDAO(BancoDados.conectar()).buscarParticipantePorEmailSenha(email, senha);
+	    }
+
 	
 }
