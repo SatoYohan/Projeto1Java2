@@ -129,7 +129,7 @@ public class PessoaDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-            	BancoDados.desconectar();
+            	//BancoDados.desconectar();
                 return rs.getInt(1) > 0; 
             }
         }

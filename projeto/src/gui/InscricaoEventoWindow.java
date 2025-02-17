@@ -43,8 +43,6 @@ public class InscricaoEventoWindow extends JFrame {
 		
 		try {
 			
-			SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-			
 			DefaultTableModel modelo = (DefaultTableModel) tblEventos.getModel();
 			modelo.fireTableDataChanged();
 			modelo.setRowCount(0);
@@ -63,12 +61,15 @@ public class InscricaoEventoWindow extends JFrame {
 						evento.getCapacidadeMaxima(),
 						evento.getStatusEvento(),
 						evento.getCategoriaEvento(),
-						evento.getPrecoEvento()
+						evento.getPrecoEvento(),
+						evento.getAdministrador().getCodigoPessoa()
 				});
 			}
 		} catch (SQLException | IOException e) {
 			
+			System.out.println(e.getMessage());
 			System.out.println("Erro ao obter eventos.");
+			
 		}
 	}
 		
@@ -110,7 +111,7 @@ public class InscricaoEventoWindow extends JFrame {
 	        	new Object[][] {
 	        	},
 	        	new String[] {
-	        			"Codigo", "Nome", "Descricao", "Data", "Duracao", "Local", "Capacidade Maxima", "Status", "Categoria", "Preco"
+	        		"Codigo", "Nome", "Descricao", "Data", "Duracao", "Local", "Capacidade Maxima", "Status", "Categoria", "Preco", "Codigo administrador"
 	        	}
 	        ));
 

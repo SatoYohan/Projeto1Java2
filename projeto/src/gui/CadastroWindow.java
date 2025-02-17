@@ -29,13 +29,13 @@ public class CadastroWindow extends JFrame {
     private ParticipanteService participanteService;
     private AdministradorService administradorService;
 
-    // -- Campos específicos para Administrador
+
     private JLabel labelCargo;
     private JTextField campoCargo;
     private JLabel labelDataContratacao;
     private JFormattedTextField campoDataContratacao; // Mask para data
 
-    // -- Campos específicos para Participante
+
     private JLabel labelDataNascimento;
     private JFormattedTextField campoDataNascimento;  // Mask para data
     private JLabel labelCpf;
@@ -66,14 +66,14 @@ public class CadastroWindow extends JFrame {
 			pessoa.setEmail(this.campoEmail.getText());
 			pessoa.setSenha(new String(campoSenha.getPassword()));
 			
-            // Verificar o tipo de usuário e definir o ID da função (Administrador = 1, Participante = 2)
+            
             String tipoUsuario = (String) caixaTipoUsuario.getSelectedItem();
             
 	        if (tipoUsuario == null || tipoUsuario.isEmpty()) {
 	            JOptionPane.showMessageDialog(this, "Por favor, selecione um tipo de usuário.", "Erro", JOptionPane.ERROR_MESSAGE);
 	            return;
 	        }
-            int idFuncao = 0; // Valor padrão para erro ou caso não seja definido
+            int idFuncao = 0;
             if ("Administrador".equals(tipoUsuario)) {
                 idFuncao = 2;
             } else if ("Participante".equals(tipoUsuario)) {
@@ -100,11 +100,9 @@ public class CadastroWindow extends JFrame {
                 }
             }
 
-//            pessoaService.cadastrarUsuario(pessoa);
+
             int idPessoaGerado = pessoaService.cadastrarUsuario(pessoa);
             pessoa.setCodigoPessoa(idPessoaGerado);
-			
-			//aluno.setDataIngresso(new java.sql.Date(sdf.parse(this.ftxtDataIngresso.getText()).getTime()));
 			
 			
             if (idFuncao == 2) {
@@ -117,7 +115,7 @@ public class CadastroWindow extends JFrame {
             	
             	administradorService.cadastrar(administrador);
                
-            } else { // Para Participante
+            } else {
             	
             	
             	Participante participante = new Participante();

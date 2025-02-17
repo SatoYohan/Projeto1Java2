@@ -150,9 +150,9 @@ public class EventoDAO {
         evento.setCategoriaEvento(CategoriaEvento.valueOf(rs.getString("categoria_evento")));
         evento.setPrecoEvento(rs.getFloat("preco_evento"));
 
-        Administrador admin = new Administrador();
-        admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
-        evento.setAdministrador(admin);
+        //Administrador admin = new Administrador();
+        //admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+        evento.getAdministrador().setCodigoPessoa(rs.getInt("codigo_pessoa"));
 
         return evento;
     }
