@@ -30,6 +30,13 @@ public class PrincipalWindowParticipante extends JFrame {
         painel.add(botaoInscreverEvento);
 
         botaoRelatorios = new JButton("Relatórios");
+        botaoRelatorios.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		new RelatorioParticipanteWindow().setVisible(true);
+                dispose();
+        		
+        	}
+        });
         botaoRelatorios.setBounds(136, 150, 231, 30);
         painel.add(botaoRelatorios);
 
