@@ -1,120 +1,110 @@
 package gui;
 
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableModel;
-
 import entities.Evento;
 import entities.InscricaoEvento;
 import entities.Participante;
-import entities.Pessoa;
 import entities.SessaoParticipante;
 import entities.StatusEvento;
 import entities.StatusInscricao;
 import service.EventoService;
 import service.InscricaoEventoService;
 
-import javax.swing.JTable;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 public class InscricaoEventoWindow extends JFrame {
-    private JButton botaoInscrever;
-    private JButton botaoVoltar;
-    private JTable tblEventos;
-    private EventoService eventoService;
-    private JScrollPane scrollPane;
-    private InscricaoEventoService inscricaoEventoService;
-    
-    public InscricaoEventoWindow() throws SQLException, IOException {
 
-    	this.iniciarComponentes();
-    	
-    	this.eventoService = new EventoService();
-    	this.inscricaoEventoService = new InscricaoEventoService();
-    	
-    	this.buscarEventos();
-    }
-    
-    private void inscreverEmEvento() {
-        int eventoSelecionado = tblEventos.getSelectedRow();
+	private JTable tblEventos;
+	private DefaultTableModel modeloTabela;
+	private JButton botaoInscrever;
+	private JButton botaoVoltar;
 
-        if (eventoSelecionado == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um evento para se inscrever.");
-            return;
-        }
+	private EventoService eventoService;
+	private InscricaoEventoService inscricaoEventoService;
 
-        try {
-            int codigoEvento = (int) tblEventos.getValueAt(eventoSelecionado, 0);
-            Evento evento = eventoService.buscarEventoPorCodigo(codigoEvento);
+	public InscricaoEventoWindow() throws SQLException, IOException {
+		setTitle("Inscrição em Evento");
+		setSize(800, 600); // Janela maior
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 
-            if (!evento.getStatusEvento().equals(StatusEvento.ABERTO)) {
-                JOptionPane.showMessageDialog(this, "Este evento não está aberto para inscrições.");
-                return;
-            }
+		// Instancia os services
+		eventoService = new EventoService();
+		inscricaoEventoService = new InscricaoEventoService();
 
+		// Configura o layout principal como BorderLayout
+		getContentPane().setLayout(new BorderLayout());
 
-            int quantidadeInscritos = eventoService.contarInscritosNoEvento(codigoEvento);
-            if (quantidadeInscritos >= evento.getCapacidadeMaxima()) {
-                JOptionPane.showMessageDialog(this, "A capacidade máxima deste evento foi atingida.");
-                return;
-            }
+		// -------------------------------------------
+		// Rótulo no topo (NORTH)
+		// -------------------------------------------
+		JPanel painelTopo = new JPanel();
+		JLabel rotuloTitulo = new JLabel("Eventos Disponíveis:");
+		rotuloTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
+		painelTopo.add(rotuloTitulo);
+		add(painelTopo, BorderLayout.NORTH);
 
-            Participante participante = SessaoParticipante.getParticipanteLogado();
-            boolean jaInscrito = inscricaoEventoService.verificarInscricaoExistente(participante.getCodigoPessoa(), evento.getCodigoEvento());
+		// -------------------------------------------
+		// Tabela no centro (CENTER)
+		// -------------------------------------------
+		// Modelo da tabela com colunas
+		modeloTabela = new DefaultTableModel(
+				new Object[][]{},
+				new String[]{
+						"Código", "Nome", "Descrição", "Data/Hora", "Duração",
+						"Local", "Capacidade", "Status", "Categoria", "Preço"
+				}
+		);
+		tblEventos = new JTable(modeloTabela);
+		tblEventos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		// Se quiser que as colunas não redimensionem automaticamente
+		// e mostre scrollbar horizontal se for muito grande.
 
-            if (jaInscrito) {
-                JOptionPane.showMessageDialog(this, "Você já está inscrito neste evento.");
-                return;
-            }
-            
-            new StatusInscricaoWindow(evento, participante).setVisible(true);
-/*            InscricaoEvento inscricao = new InscricaoEvento();
-            
-            inscricao.setEvento(evento);
-            inscricao.setParticipante(participante);
-            inscricao.setDataInscricao(new java.sql.Date(System.currentTimeMillis()));
-            inscricao.setStatusInscricao(StatusInscricao.PENDENTE_DE_PAGAMENTO);
-            inscricao.setPresencaConfirmada(false);
+		// ScrollPane para a tabela
+		JScrollPane scrollPane = new JScrollPane(tblEventos);
+		add(scrollPane, BorderLayout.CENTER);
 
-            this.inscricaoEventoService.cadastrar(inscricao);
+		// -------------------------------------------
+		// Painel de botões no sul (SOUTH)
+		// -------------------------------------------
+		JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+		botaoInscrever = new JButton("Inscrever-se");
+		botaoVoltar = new JButton("Voltar");
 
-            JOptionPane.showMessageDialog(this, "Inscrição realizada com sucesso!");
-*/
-            
-        } catch (SQLException | IOException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao inscrever-se no evento: " + ex.getMessage());
-        }
-    }
+		painelBotoes.add(botaoInscrever);
+		painelBotoes.add(botaoVoltar);
 
-    
+		add(painelBotoes, BorderLayout.SOUTH);
+
+		// -------------------------------------------
+		// Listeners dos botões
+		// -------------------------------------------
+		botaoInscrever.addActionListener(e -> {
+			inscreverEmEvento();
+		});
+
+		botaoVoltar.addActionListener(e -> {
+			new PrincipalWindowParticipante().setVisible(true);
+			dispose();
+		});
+
+		// Carrega os eventos para exibir na tabela
+		buscarEventos();
+	}
+
 	private void buscarEventos() {
-		
 		try {
-			
-			DefaultTableModel modelo = (DefaultTableModel) tblEventos.getModel();
-			modelo.fireTableDataChanged();
-			modelo.setRowCount(0);
-			
-			List<Evento> eventos = this.eventoService.listarEventos();
-			
+			// Limpa a tabela
+			modeloTabela.setRowCount(0);
+
+			// Busca todos os eventos
+			List<Evento> eventos = eventoService.listarEventos();
 			for (Evento evento : eventos) {
-				
-				modelo.addRow(new Object[] {
-						
+				modeloTabela.addRow(new Object[]{
 						evento.getCodigoEvento(),
 						evento.getNomeEvento(),
 						evento.getDescEvento(),
@@ -125,73 +115,69 @@ public class InscricaoEventoWindow extends JFrame {
 						evento.getStatusEvento(),
 						evento.getCategoriaEvento(),
 						evento.getPrecoEvento()
-						//evento.getAdministrador().getCodigoPessoa()
 				});
 			}
 		} catch (SQLException | IOException e) {
-			
-			System.out.println(e.getMessage());
-			System.out.println("Erro ao obter eventos.");
-			
+			JOptionPane.showMessageDialog(this,
+					"Erro ao obter eventos: " + e.getMessage(),
+					"Erro",
+					JOptionPane.ERROR_MESSAGE
+			);
 		}
 	}
-		
-		public void iniciarComponentes() {
-			
-	        setTitle("Inscrição em Evento");
-	        setSize(500, 400);
-	        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	        setLocationRelativeTo(null);
 
-	        JPanel painel = new JPanel();
-	        painel.setLayout(null);
-	        getContentPane().add(painel);
+	private void inscreverEmEvento() {
+		int linhaSelecionada = tblEventos.getSelectedRow();
 
-	        JLabel rotuloTitulo = new JLabel("Eventos Disponíveis:");
-	        rotuloTitulo.setBounds(50, 30, 200, 25);
-	        painel.add(rotuloTitulo);
-
-	        botaoInscrever = new JButton("Inscrever-se");
-	        botaoInscrever.setBounds(50, 250, 106, 30);
-	        painel.add(botaoInscrever);
-
-	        botaoVoltar = new JButton("Voltar");
-	        botaoVoltar.setBounds(340, 250, 106, 30);
-	        painel.add(botaoVoltar);
-	        
-	        JPanel panel = new JPanel();
-	        panel.setBounds(60, 66, 386, 171);
-	        painel.add(panel);
-	        panel.setLayout(null);
-	        
-	        scrollPane = new JScrollPane();
-	        scrollPane.setBounds(10, 11, 366, 160);
-	        panel.add(scrollPane);
-	        
-	        tblEventos = new JTable();
-	        scrollPane.setViewportView(tblEventos);
-	        tblEventos.setModel(new DefaultTableModel(
-	        	new Object[][] {
-	        	},
-	        	new String[] {
-	        		"Codigo", "Nome", "Descricao", "Data", "Duracao", "Local", "Capacidade Maxima", "Status", "Categoria", "Preco"
-	        	}
-	        ));
-
-	        botaoInscrever.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	            	inscreverEmEvento();
-
-	            }
-	        });
-
-	        botaoVoltar.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                new PrincipalWindowParticipante().setVisible(true);
-	                dispose();
-	            }
-	        });
+		if (linhaSelecionada == -1) {
+			JOptionPane.showMessageDialog(
+					this,
+					"Selecione um evento para se inscrever.",
+					"Aviso",
+					JOptionPane.WARNING_MESSAGE
+			);
+			return;
 		}
+
+		try {
+			int codigoEvento = (int) tblEventos.getValueAt(linhaSelecionada, 0);
+			Evento evento = eventoService.buscarEventoPorCodigo(codigoEvento);
+
+			if (!evento.getStatusEvento().equals(StatusEvento.ABERTO)) {
+				JOptionPane.showMessageDialog(this,
+						"Este evento não está aberto para inscrições.");
+				return;
+			}
+
+			int quantidadeInscritos = eventoService.contarInscritosNoEvento(codigoEvento);
+			if (quantidadeInscritos >= evento.getCapacidadeMaxima()) {
+				JOptionPane.showMessageDialog(this,
+						"A capacidade máxima deste evento foi atingida.");
+				return;
+			}
+
+			Participante participante = SessaoParticipante.getParticipanteLogado();
+			boolean jaInscrito = inscricaoEventoService.verificarInscricaoExistente(
+					participante.getCodigoPessoa(),
+					evento.getCodigoEvento()
+			);
+
+			if (jaInscrito) {
+				JOptionPane.showMessageDialog(this,
+						"Você já está inscrito neste evento.");
+				return;
+			}
+
+			// Exemplo: criar InscricaoEvento e cadastrar
+			// ou abrir uma tela de StatusInscricaoWindow
+			// Abaixo, chamando a tela de status:
+			new StatusInscricaoWindow(evento, participante).setVisible(true);
+			dispose();
+
+		} catch (SQLException | IOException ex) {
+			ex.printStackTrace();
+			JOptionPane.showMessageDialog(this,
+					"Erro ao inscrever-se no evento: " + ex.getMessage());
+		}
+	}
 }
