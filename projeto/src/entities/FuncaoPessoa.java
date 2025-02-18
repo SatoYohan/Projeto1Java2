@@ -2,6 +2,6 @@ package entities;
 
 public enum FuncaoPessoa {
 
-	PARTICIPANTE,
+    PARTICIPANTE,
     ADMINISTRADOR;
 }

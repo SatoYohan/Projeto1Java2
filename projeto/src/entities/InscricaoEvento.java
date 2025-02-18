@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class InscricaoEvento {
 
-	private int codigoInscricao;
+    private int codigoInscricao;
     private Participante participante;
     private Evento evento;
     private Date dataInscricao;
@@ -12,9 +12,6 @@ public class InscricaoEvento {
     private boolean presencaConfirmada;
 
     public InscricaoEvento() {
-    	this.evento = new Evento();
-    	this.participante = new Participante();
-
     }
 
     public InscricaoEvento(int codigoInscricao, Participante participante, Evento evento, Date dataInscricao,
