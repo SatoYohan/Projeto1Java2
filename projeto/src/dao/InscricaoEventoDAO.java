@@ -191,7 +191,7 @@ public class InscricaoEventoDAO {
 
             List<InscricaoEvento> listaInscricoes = new ArrayList<>();
             while (rs.next()) {
-                InscricaoEvento inscricao = mapearInscricao(rs);
+                InscricaoEvento inscricao = mapearInscricao2(rs);
                 listaInscricoes.add(inscricao);
             }
 
@@ -313,6 +313,36 @@ public class InscricaoEventoDAO {
             BancoDados.desconectar();
         }
     }
+    
+    private InscricaoEvento mapearInscricao2(ResultSet rs) throws SQLException {
+        InscricaoEvento inscricao = new InscricaoEvento();
+
+        inscricao.setCodigoInscricao(rs.getInt("codigo_inscricao"));
+        inscricao.getParticipante().setCodigoPessoa(rs.getInt("codigo_participante"));;
+        inscricao.getEvento().setCodigoEvento(rs.getInt("codigo_evento"));
+        inscricao.setDataInscricao(rs.getDate("data_inscricao"));
+        inscricao.setStatusInscricao(StatusInscricao.valueOf(rs.getString("status_inscricao")));
+        inscricao.setPresencaConfirmada(rs.getBoolean("presenca_confirmada"));
+
+        // Mapear os campos do Evento
+        Evento evento = new Evento();
+        evento.setCodigoEvento(rs.getInt("codigo_evento"));
+        evento.setNomeEvento(rs.getString("nome_evento"));
+        evento.setDescEvento(rs.getString("desc_evento"));
+        evento.setDataEvento(rs.getTimestamp("data_evento"));
+        evento.setDuracaoEvento(rs.getInt("duracao_evento"));
+        evento.setLocalEvento(rs.getString("local_evento"));
+        evento.setCapacidadeMaxima(rs.getInt("capacidade_maxima"));
+        evento.setStatusEvento(StatusEvento.valueOf(rs.getString("status_evento")));
+        evento.setCategoriaEvento(CategoriaEvento.valueOf(rs.getString("categoria_evento")));
+        evento.setPrecoEvento(rs.getFloat("preco_evento"));
+        evento.getAdministrador().setCodigoPessoa(rs.getInt("codigo_organizador"));
+
+        inscricao.setEvento(evento);
+
+        return inscricao;
+    }
+
 
 
 }

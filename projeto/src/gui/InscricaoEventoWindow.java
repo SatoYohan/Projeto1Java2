@@ -124,7 +124,8 @@ public class InscricaoEventoWindow extends JFrame {
 						evento.getCapacidadeMaxima(),
 						evento.getStatusEvento(),
 						evento.getCategoriaEvento(),
-						evento.getAdministrador().getCodigoPessoa()
+						evento.getPrecoEvento()
+						//evento.getAdministrador().getCodigoPessoa()
 				});
 			}
 		} catch (SQLException | IOException e) {
@@ -173,7 +174,7 @@ public class InscricaoEventoWindow extends JFrame {
 	        	new Object[][] {
 	        	},
 	        	new String[] {
-	        		"Codigo", "Nome", "Descricao", "Data", "Duracao", "Local", "Capacidade Maxima", "Status", "Categoria", "Preco", "Codigo administrador"
+	        		"Codigo", "Nome", "Descricao", "Data", "Duracao", "Local", "Capacidade Maxima", "Status", "Categoria", "Preco"
 	        	}
 	        ));
 

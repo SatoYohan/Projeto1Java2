@@ -44,9 +44,12 @@ public class CancelarInscricaoWindow extends JFrame {
 		
 		this.inscricaoEventoService = new InscricaoEventoService();
 		this.eventoService = new EventoService();
-		
+
 		this.listarEventos();
+
 	}
+	
+
 	
 	private void confirmarPresenca() {
 	    int linhaSelecionada = tblInscritos.getSelectedRow();
