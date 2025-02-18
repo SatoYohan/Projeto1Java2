@@ -84,6 +84,21 @@ public class GerenciarEventoWindow extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        JButton btnVoltar = new JButton("Voltar");
+        // Posição (x=20, y=20, largura=100, altura=30). Ajuste conforme preferir
+        btnVoltar.setBounds(500, 20, 100, 30);
+        // Adiciona no painel principal da janela
+        getContentPane().add(btnVoltar);
+
+        // Ação do botão "Voltar"
+        btnVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new PrincipalWindowAdministrador().setVisible(true);
+                dispose(); // Fecha a GerenciarEventoWindow
+            }
+        });
+
         // Instancia o service (ajuste conforme seu construtor)
         eventoService = new EventoService();
 
