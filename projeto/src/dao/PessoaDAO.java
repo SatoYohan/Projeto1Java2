@@ -1,5 +1,6 @@
 package dao;
 
+import entities.Participante;
 import entities.Pessoa;
 
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PessoaDAO {
+public class PessoaDAO {   
     private Connection conn;
 
     public PessoaDAO(Connection conn) {
@@ -18,13 +19,15 @@ public class PessoaDAO {
         return this.conn;
     }
 
+    
+    
     public int cadastrar(Pessoa pessoa) throws SQLException {
         PreparedStatement st = null;
         ResultSet rs = null;
         try {
             st = conn.prepareStatement(
-                    "INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
+                "INSERT INTO pessoa (nome_completo, email, senha, id_funcao) VALUES (?, ?, ?, ?)", 
+                Statement.RETURN_GENERATED_KEYS);
 
             st.setString(1, pessoa.getNomeCompleto());
             st.setString(2, pessoa.getEmail());
@@ -32,12 +35,12 @@ public class PessoaDAO {
             st.setInt(4, pessoa.getIdFuncao());
             st.executeUpdate();
 
-
+           
             rs = st.getGeneratedKeys();
             if (rs.next()) {
-                return rs.getInt(1);
+                return rs.getInt(1); 
             }
-            return -1;
+            return -1; 
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.desconectar();
@@ -67,7 +70,7 @@ public class PessoaDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
+            BancoDados.desconectar(); 
         }
     }
 
@@ -107,7 +110,7 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
+            BancoDados.desconectar(); 
         }
     }
 
@@ -119,7 +122,7 @@ public class PessoaDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
+            BancoDados.desconectar(); 
         }
     }
 
@@ -129,8 +132,8 @@ public class PessoaDAO {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                //BancoDados.desconectar();
-                return rs.getInt(1) > 0;
+            	//BancoDados.desconectar();
+                return rs.getInt(1) > 0; 
             }
         }
         BancoDados.desconectar();
@@ -140,7 +143,7 @@ public class PessoaDAO {
     public boolean validarCredenciais(String email, String senha) throws SQLException, IOException {
         String query = "SELECT 1 FROM pessoa WHERE email = ? AND senha = ?";
         try (
-                PreparedStatement st = conn.prepareStatement(query)) {
+             PreparedStatement st = conn.prepareStatement(query)) {
             st.setString(1, email);
             st.setString(2, senha);
 
@@ -155,28 +158,28 @@ public class PessoaDAO {
     public int buscarFuncaoPorEmailSenha(String email, String senha) throws SQLException {
         String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
         PreparedStatement st = conn.prepareStatement(sql);
-
+   
 
         if (email == null || email.isEmpty() || senha == null || senha.isEmpty()) {
             throw new SQLException("Email ou senha não fornecidos.");
         }
-
+        
         st.setString(1, email);  // Coloca o valor do email
         st.setString(2, senha);  // Coloca o valor da senha
-
+        
         try (ResultSet rs = st.executeQuery()) {
             if (rs.next()) {
-
+            	
                 return rs.getInt("id_funcao");
             } else {
-
+            	
                 return -1;  // Caso não encontre a função
-            }
-
+            } 
+            
         } finally {
-            BancoDados.desconectar();
+        	BancoDados.desconectar();
         }
-
+        
 /*        if (rs.next()) {
             int idFuncao = rs.getInt("id_funcao");
             rs.close();
@@ -190,7 +193,7 @@ public class PessoaDAO {
             return -1;
         }*/
     }
-
+    
  /*   public int obterFuncaoPorCredenciais(String email, String senha) throws SQLException, IOException {
         String sql = "SELECT id_funcao FROM pessoa WHERE email = ? AND senha = ?";
         try (
@@ -216,4 +219,45 @@ public class PessoaDAO {
         }
     }
     */
+    
+    public Participante buscarParticipantePorEmailSenha(String email, String senha) throws SQLException, IOException {
+        Connection conn = BancoDados.conectar();
+        PreparedStatement st = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "SELECT p.codigo_pessoa, p.nome_completo, p.email, p.senha, pa.data_nascimento, pa.cpf " +
+                         "FROM pessoa p " +
+                         "JOIN participante pa ON p.codigo_pessoa = pa.codigo_pessoa " +
+                         "WHERE p.email = ? AND p.senha = ?";
+
+            st = conn.prepareStatement(sql);
+            st.setString(1, email);
+            st.setString(2, senha);
+            rs = st.executeQuery();
+
+            if (rs.next()) {
+                Pessoa pessoa = new Pessoa();
+                pessoa.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+                pessoa.setNomeCompleto(rs.getString("nome_completo"));
+                pessoa.setEmail(rs.getString("email"));
+                pessoa.setSenha(rs.getString("senha"));
+
+                Participante participante = new Participante();
+                participante.setCodigoPessoa(rs.getInt("codigo_pessoa"));
+                participante.setDataNascimento(rs.getDate("data_nascimento"));
+                participante.setCpf(rs.getString("cpf"));
+                participante.setPessoa(pessoa);
+
+                return participante;
+            }
+            return null;
+
+        } finally {
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.finalizarStatement(st);
+            BancoDados.desconectar();
+        }
+    }
+
 }

@@ -8,6 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.SQLException;
+import entities.Participante;
+import entities.SessaoParticipante;
+
 
 public class LoginWindow extends JFrame {
     private JTextField campoEmail;
@@ -76,7 +79,12 @@ public class LoginWindow extends JFrame {
                         new PrincipalWindowAdministrador().setVisible(true);
                         dispose();
                     } else if (idFuncao == 1) {
+                    	
+                    	Participante participanteLogado = pessoaService.buscarParticipantePorEmailSenha(email, senha);
+                    	
                         JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado como Participante " + email + ".");
+                        SessaoParticipante.setParticipanteLogado(participanteLogado);
+                        System.out.println(participanteLogado.getCodigoPessoa());
                         new PrincipalWindowParticipante().setVisible(true);
                         dispose();
                     } else {

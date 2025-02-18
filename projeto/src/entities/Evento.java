@@ -26,6 +26,7 @@ public class Evento {
     private Administrador administrador;
 
     public Evento() {
+    	this.administrador = new Administrador();
     }
 
     public Evento(int codigoEvento, String nomeEvento, String descEvento,

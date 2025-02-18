@@ -2,6 +2,7 @@ package service;
 
 import dao.BancoDados;
 import dao.EventoDAO;
+import dao.InscricaoEventoDAO;
 import dao.PessoaDAO;
 import entities.Evento;
 import entities.StatusEvento;
@@ -78,4 +79,7 @@ public class EventoService {
         return new EventoDAO(conn).buscarPorStatus(status);
     }
 
+    public int contarInscritosNoEvento(int codigoEvento) throws SQLException, IOException {
+        return new InscricaoEventoDAO(BancoDados.conectar()).contarInscritos(codigoEvento);
+    }
 }

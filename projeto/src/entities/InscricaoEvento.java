@@ -12,6 +12,8 @@ public class InscricaoEvento {
     private boolean presencaConfirmada;
 
     public InscricaoEvento() {
+    	this.evento = new Evento();
+    	this.participante = new Participante();
     }
 
     public InscricaoEvento(int codigoInscricao, Participante participante, Evento evento, Date dataInscricao,

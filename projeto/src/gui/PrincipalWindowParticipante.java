@@ -33,11 +33,11 @@ public class PrincipalWindowParticipante extends JFrame {
 
         botaoRelatorios = new JButton("Relatórios");
         botaoRelatorios.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                new RelatorioParticipanteWindow().setVisible(true);
+        	public void actionPerformed(ActionEvent e) {
+        		new RelatorioParticipanteWindow().setVisible(true);
                 dispose();
-
-            }
+        		
+        	}
         });
         botaoRelatorios.setBounds(136, 150, 231, 30);
         painel.add(botaoRelatorios);
@@ -45,8 +45,19 @@ public class PrincipalWindowParticipante extends JFrame {
         botaoLogout = new JButton("Logout");
         botaoLogout.setBounds(136, 200, 231, 30);
         painel.add(botaoLogout);
-
+        
         JButton botaoCancelarConfirmar = new JButton("Cancelar Inscrição / Confirmar Presença");
+        botaoCancelarConfirmar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		try {
+					new CancelarInscricaoWindow().setVisible(true);
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+                dispose();
+        	}
+        });
         botaoCancelarConfirmar.setFont(new Font("Tahoma", Font.PLAIN, 11));
         botaoCancelarConfirmar.setBounds(136, 95, 231, 46);
         painel.add(botaoCancelarConfirmar);
@@ -55,11 +66,11 @@ public class PrincipalWindowParticipante extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    new InscricaoEventoWindow().setVisible(true);
-                } catch (SQLException | IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
+					new InscricaoEventoWindow().setVisible(true);
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
                 dispose();
             }
         });

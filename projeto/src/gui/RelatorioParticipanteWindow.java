@@ -37,15 +37,15 @@ public class RelatorioParticipanteWindow extends JFrame {
 
 	public RelatorioParticipanteWindow() {
 		setTitle("Relatório");
-
+		
 		this.iniciarComponentes();
-
+		
 		this.inscricaoEventoService = new InscricaoEventoService();
-
+		
 		this.listarEventosInscritos();
 	}
-
-
+	
+	
 	private void listarHistoricoParticipacao() {
 	    scrollPaneInscritos.setVisible(false);
 	    scrollPaneHistorico.setVisible(true);
@@ -83,7 +83,6 @@ public class RelatorioParticipanteWindow extends JFrame {
 	    scrollPaneInscritos.setVisible(true);
 	    scrollPaneHistorico.setVisible(false);
 	    
-	    
 	    try {
 	        
 	        Participante participanteLogado = SessaoParticipante.getParticipanteLogado();
@@ -113,8 +112,9 @@ public class RelatorioParticipanteWindow extends JFrame {
 	    }
 	}
 
+	
 	private void iniciarComponentes() {
-
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -122,7 +122,7 @@ public class RelatorioParticipanteWindow extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
+		
 		JButton btnEventosInscritos = new JButton("Eventos Inscritos");
 		btnEventosInscritos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -131,7 +131,7 @@ public class RelatorioParticipanteWindow extends JFrame {
 		});
 		btnEventosInscritos.setBounds(113, 11, 143, 23);
 		contentPane.add(btnEventosInscritos);
-
+		
 		JButton btnHistorico = new JButton("Histórico de Participação");
 		btnHistorico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -140,61 +140,59 @@ public class RelatorioParticipanteWindow extends JFrame {
 		});
 		btnHistorico.setBounds(266, 11, 158, 23);
 		contentPane.add(btnHistorico);
-
+		
 		JPanel pnlEventos = new JPanel();
 		pnlEventos.setBorder(new TitledBorder(null, "Eventos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlEventos.setBounds(0, 69, 434, 192);
 		contentPane.add(pnlEventos);
 		pnlEventos.setLayout(null);
-
+		
 		scrollPaneInscritos = new JScrollPane();
 		scrollPaneInscritos.setBounds(10, 23, 414, 154);
 		pnlEventos.add(scrollPaneInscritos);
-
+		
 		tblInscritos = new JTable();
 		tblInscritos.setModel(new DefaultTableModel(
-				
-				new Object[][] {
-				},
-				new String[] {
-					"C\u00F3digo", "Nome", "Descri\u00E7\u00E3o", "Data", "Dura\u00E7\u00E3o", "Local", "Capacidade M\u00E1xima", "Status", "Categoria", "Pre\u00E7o"
-				}
-			));
-			tblInscritos.getColumnModel().getColumn(6).setPreferredWidth(108);
-			scrollPaneInscritos.setViewportView(tblInscritos);
+			new Object[][] {
+			},
+			new String[] {
+				"C\u00F3digo", "Nome", "Descri\u00E7\u00E3o", "Data", "Dura\u00E7\u00E3o", "Local", "Capacidade M\u00E1xima", "Status", "Categoria", "Pre\u00E7o"
+			}
+		));
+		tblInscritos.getColumnModel().getColumn(6).setPreferredWidth(108);
+		scrollPaneInscritos.setViewportView(tblInscritos);
 
-			scrollPaneHistorico = new JScrollPane();
-			scrollPaneHistorico.setBounds(10, 23, 414, 154);
-			pnlEventos.add(scrollPaneHistorico);
+		scrollPaneHistorico = new JScrollPane();
+		scrollPaneHistorico.setBounds(10, 23, 414, 154);
+		pnlEventos.add(scrollPaneHistorico);
 
-			tblHistorico = new JTable();
-			tblHistorico.setModel(new DefaultTableModel(
-			    new Object[][] {},
-			    new String[] {
-			    		"Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço"
-			    }
-			));
-			tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
-			scrollPaneHistorico.setViewportView(tblHistorico);
+		tblHistorico = new JTable();
+		tblHistorico.setModel(new DefaultTableModel(
+		    new Object[][] {},
+		    new String[] {
+		        "Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço"
+		    }
+		));
+		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
+		scrollPaneHistorico.setViewportView(tblHistorico);
 
-
-			JButton btnVoltar = new JButton("Voltar");
-			btnVoltar.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-	                new PrincipalWindowParticipante().setVisible(true);
-	                dispose();
-				}
-			});
-			btnVoltar.setBounds(14, 11, 89, 23);
-			contentPane.add(btnVoltar);
-
-			JButton btnExportar = new JButton("Exportar para xls");
-			btnExportar.setBounds(276, 45, 133, 23);
-			contentPane.add(btnExportar);
-			tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
-
-			scrollPaneInscritos.setVisible(true);
-			scrollPaneHistorico.setVisible(false);
-		}
+		
+		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+                new PrincipalWindowParticipante().setVisible(true);
+                dispose();
+			}
+		});
+		btnVoltar.setBounds(14, 11, 89, 23);
+		contentPane.add(btnVoltar);
+		
+		JButton btnExportar = new JButton("Exportar para xls");
+		btnExportar.setBounds(276, 45, 133, 23);
+		contentPane.add(btnExportar);
+		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
+		
+		scrollPaneInscritos.setVisible(true);
+		scrollPaneHistorico.setVisible(false);
 	}
-			    
+}
