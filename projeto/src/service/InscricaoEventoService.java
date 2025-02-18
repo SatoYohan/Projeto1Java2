@@ -55,7 +55,7 @@ public class InscricaoEventoService {
 		}
     
         InscricaoEventoDAO inscricaoEventoDAO = new InscricaoEventoDAO(conn);
-        List<InscricaoEvento> inscricoes = inscricaoEventoDAO.buscarEventosPorParticipante(codigoParticipante);
+        List<InscricaoEvento> inscricoes = inscricaoEventoDAO.buscarEventosFuturosPorParticipante(codigoParticipante);
 
         List<Evento> eventos = new ArrayList<>();
         for (InscricaoEvento inscricao : inscricoes) {
@@ -74,7 +74,7 @@ public class InscricaoEventoService {
 		}
     
         InscricaoEventoDAO inscricaoEventoDAO = new InscricaoEventoDAO(conn);
-        List<InscricaoEvento> inscricoes = inscricaoEventoDAO.buscarEventosPorParticipante(codigoParticipante);
+        List<InscricaoEvento> inscricoes = inscricaoEventoDAO.buscarEventosAntigosPorParticipante(codigoParticipante);
 
         List<Evento> eventos = new ArrayList<>();
         for (InscricaoEvento inscricao : inscricoes) {
