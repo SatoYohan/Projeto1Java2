@@ -1,29 +1,19 @@
 package gui;
 
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.awt.Font;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
 import javax.swing.border.TitledBorder;
-import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-
-import entities.Evento;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.awt.event.ActionEvent;
 import entities.InscricaoEvento;
 import entities.Participante;
 import entities.SessaoParticipante;
 import service.InscricaoEventoService;
-
-import javax.swing.JScrollPane;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.awt.event.ActionEvent;
 
 public class RelatorioParticipanteWindow extends JFrame {
 
@@ -35,166 +25,124 @@ public class RelatorioParticipanteWindow extends JFrame {
 	private JScrollPane scrollPaneHistorico;
 	private InscricaoEventoService inscricaoEventoService;
 
-	public RelatorioParticipanteWindow() {
-		setTitle("Relatório");
-		
-		this.iniciarComponentes();
-		
-		this.inscricaoEventoService = new InscricaoEventoService();
-		
-		this.listarEventosInscritos();
-	}
-	
-	
-	private void listarHistoricoParticipacao() {
-	    scrollPaneInscritos.setVisible(false);
-	    scrollPaneHistorico.setVisible(true);
-	    
-	    try {
-	        
-	        Participante participanteLogado = SessaoParticipante.getParticipanteLogado();
-	        
-	        DefaultTableModel modelo = (DefaultTableModel) tblHistorico.getModel();
-	        modelo.fireTableDataChanged();
-	        modelo.setRowCount(0);
-	        
-	       
-	        List<InscricaoEvento> eventos = this.inscricaoEventoService.buscarEventosAntigosPorParticipante(participanteLogado.getCodigoPessoa());
-	        
-	        for (InscricaoEvento inscricaoEvento : eventos) {
-	            modelo.addRow(new Object[] {
-		                inscricaoEvento.getEvento().getCodigoEvento(),
-		                inscricaoEvento.getEvento().getNomeEvento(),
-		                inscricaoEvento.getEvento().getDescEvento(),
-		                inscricaoEvento.getEvento().getDataEvento(),
-		                inscricaoEvento.getEvento().getDuracaoEvento(),
-		                inscricaoEvento.getEvento().getLocalEvento(),
-		                inscricaoEvento.getEvento().getCapacidadeMaxima(),
-		                inscricaoEvento.getEvento().getStatusEvento(),
-		                inscricaoEvento.getEvento().getCategoriaEvento(),
-		                inscricaoEvento.getEvento().getPrecoEvento()
-	            });
-	        }
-	    } catch (SQLException | IOException e) {
-	        System.out.println(e.getMessage());
-	    }
-	}
-
-	private void listarEventosInscritos() {
-	    scrollPaneInscritos.setVisible(true);
-	    scrollPaneHistorico.setVisible(false);
-	    
-	    try {
-	        
-	        Participante participanteLogado = SessaoParticipante.getParticipanteLogado();
-	        
-	        DefaultTableModel modelo = (DefaultTableModel) tblInscritos.getModel();
-	        modelo.fireTableDataChanged();
-	        modelo.setRowCount(0);
-	        
-	       
-	        List<InscricaoEvento> eventos = this.inscricaoEventoService.buscarEventosFuturosPorParticipante(participanteLogado.getCodigoPessoa());
-	        
-	        for (InscricaoEvento inscricaoEvento : eventos) {
-	            modelo.addRow(new Object[] {
-	                inscricaoEvento.getEvento().getCodigoEvento(),
-	                inscricaoEvento.getEvento().getNomeEvento(),
-	                inscricaoEvento.getEvento().getDescEvento(),
-	                inscricaoEvento.getEvento().getDataEvento(),
-	                inscricaoEvento.getEvento().getDuracaoEvento(),
-	                inscricaoEvento.getEvento().getLocalEvento(),
-	                inscricaoEvento.getEvento().getCapacidadeMaxima(),
-	                inscricaoEvento.getEvento().getStatusEvento(),
-	                inscricaoEvento.getEvento().getCategoriaEvento(),
-	                inscricaoEvento.getEvento().getPrecoEvento()
-	            });
-	        }
-	    } catch (SQLException | IOException e) {
-	        System.out.println(e.getMessage());
-	    }
-	}
-
-	
-	private void iniciarComponentes() {
-		
+	public RelatorioParticipanteWindow() throws SQLException, IOException {
+		setTitle("Relatório de Participação");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setBounds(100, 100, 600, 400);
+		setLocationRelativeTo(null);
 
+		this.inscricaoEventoService = new InscricaoEventoService();
+
+		iniciarComponentes();
+		listarEventosInscritos();
+	}
+
+	private void iniciarComponentes() {
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
+		JButton btnVoltar = new JButton("Voltar");
+		btnVoltar.setBounds(10, 10, 100, 30);
+		btnVoltar.addActionListener(e -> {
+			new PrincipalWindowParticipante().setVisible(true);
+			dispose();
+		});
+		contentPane.add(btnVoltar);
+
 		JButton btnEventosInscritos = new JButton("Eventos Inscritos");
-		btnEventosInscritos.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnEventosInscritos.setBounds(120, 10, 180, 30);
+		btnEventosInscritos.addActionListener(e -> {
+			try {
 				listarEventosInscritos();
+			} catch (SQLException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		});
-		btnEventosInscritos.setBounds(113, 11, 143, 23);
 		contentPane.add(btnEventosInscritos);
-		
+
 		JButton btnHistorico = new JButton("Histórico de Participação");
-		btnHistorico.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		btnHistorico.setBounds(310, 10, 200, 30);
+		btnHistorico.addActionListener(e -> {
+			try {
 				listarHistoricoParticipacao();
+			} catch (SQLException | IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 		});
-		btnHistorico.setBounds(266, 11, 158, 23);
 		contentPane.add(btnHistorico);
-		
+
+		JButton btnExportar = new JButton("Exportar para XLS");
+		btnExportar.setBounds(420, 320, 150, 30);
+		contentPane.add(btnExportar);
+
 		JPanel pnlEventos = new JPanel();
-		pnlEventos.setBorder(new TitledBorder(null, "Eventos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		pnlEventos.setBounds(0, 69, 434, 192);
-		contentPane.add(pnlEventos);
+		pnlEventos.setBorder(new TitledBorder(null, "Eventos", TitledBorder.LEADING, TitledBorder.TOP, new Font("Arial", Font.BOLD, 14), null));
+		pnlEventos.setBounds(10, 50, 560, 260);
 		pnlEventos.setLayout(null);
-		
+		contentPane.add(pnlEventos);
+
 		scrollPaneInscritos = new JScrollPane();
-		scrollPaneInscritos.setBounds(10, 23, 414, 154);
+		scrollPaneInscritos.setBounds(10, 20, 540, 230);
 		pnlEventos.add(scrollPaneInscritos);
-		
+
 		tblInscritos = new JTable();
 		tblInscritos.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"C\u00F3digo", "Nome", "Descri\u00E7\u00E3o", "Data", "Dura\u00E7\u00E3o", "Local", "Capacidade M\u00E1xima", "Status", "Categoria", "Pre\u00E7o"
-			}
+				new Object[][] {},
+				new String[] {"Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade", "Status", "Categoria", "Preço"}
 		));
-		tblInscritos.getColumnModel().getColumn(6).setPreferredWidth(108);
 		scrollPaneInscritos.setViewportView(tblInscritos);
 
 		scrollPaneHistorico = new JScrollPane();
-		scrollPaneHistorico.setBounds(10, 23, 414, 154);
+		scrollPaneHistorico.setBounds(10, 20, 540, 230);
 		pnlEventos.add(scrollPaneHistorico);
 
 		tblHistorico = new JTable();
 		tblHistorico.setModel(new DefaultTableModel(
-		    new Object[][] {},
-		    new String[] {
-		        "Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço"
-		    }
+				new Object[][] {},
+				new String[] {"Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade", "Status", "Categoria", "Preço"}
 		));
-		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
 		scrollPaneHistorico.setViewportView(tblHistorico);
 
-		
-		JButton btnVoltar = new JButton("Voltar");
-		btnVoltar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-                new PrincipalWindowParticipante().setVisible(true);
-                dispose();
-			}
-		});
-		btnVoltar.setBounds(14, 11, 89, 23);
-		contentPane.add(btnVoltar);
-		
-		JButton btnExportar = new JButton("Exportar para xls");
-		btnExportar.setBounds(276, 45, 133, 23);
-		contentPane.add(btnExportar);
-		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
-		
 		scrollPaneInscritos.setVisible(true);
 		scrollPaneHistorico.setVisible(false);
+	}
+
+	private void listarEventosInscritos() throws SQLException, IOException {
+		scrollPaneInscritos.setVisible(true);
+		scrollPaneHistorico.setVisible(false);
+		carregarDadosNaTabela(tblInscritos, inscricaoEventoService.buscarEventosFuturosPorParticipante(getParticipanteLogado()));
+	}
+
+	private void listarHistoricoParticipacao() throws SQLException, IOException {
+		scrollPaneInscritos.setVisible(false);
+		scrollPaneHistorico.setVisible(true);
+		carregarDadosNaTabela(tblHistorico, inscricaoEventoService.buscarEventosAntigosPorParticipante(getParticipanteLogado()));
+	}
+
+	private void carregarDadosNaTabela(JTable tabela, List<InscricaoEvento> eventos) {
+		DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
+		modelo.setRowCount(0);
+		for (InscricaoEvento evento : eventos) {
+			modelo.addRow(new Object[]{
+					evento.getEvento().getCodigoEvento(),
+					evento.getEvento().getNomeEvento(),
+					evento.getEvento().getDescEvento(),
+					evento.getEvento().getDataEvento(),
+					evento.getEvento().getDuracaoEvento(),
+					evento.getEvento().getLocalEvento(),
+					evento.getEvento().getCapacidadeMaxima(),
+					evento.getEvento().getStatusEvento(),
+					evento.getEvento().getCategoriaEvento(),
+					evento.getEvento().getPrecoEvento()
+			});
+		}
+	}
+
+	private int getParticipanteLogado() throws SQLException, IOException {
+		return SessaoParticipante.getParticipanteLogado().getCodigoPessoa();
 	}
 }
