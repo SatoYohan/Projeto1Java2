@@ -100,11 +100,11 @@ public class AdministradorDAO {
         administrador.setCodigoPessoa(rs.getInt("codigo_pessoa"));
         administrador.setCargo(rs.getString("cargo"));
         administrador.setDataContratacao(rs.getDate("data_contratacao"));
-        
+
         Pessoa pessoa = new Pessoa();
         pessoa.setCodigoPessoa(rs.getInt("codigo_pessoa"));
         administrador.setPessoa(pessoa);
-        
+
         return administrador;
     }
 }
