@@ -38,7 +38,7 @@ public class CancelarInscricaoWindow extends JFrame {
 	private JScrollPane scrollPane;
 	private EventoService eventoService;
 	
-	public CancelarInscricaoWindow() {
+	public CancelarInscricaoWindow() throws SQLException, IOException {
 
 		this.iniciarComponentes();
 		
