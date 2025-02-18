@@ -20,7 +20,7 @@ public class EventoDAO {
     public EventoDAO(Connection conn) {
         this.conn = conn;
     }
-    
+
     public Connection getConnection() {
         return this.conn;
     }
@@ -30,10 +30,10 @@ public class EventoDAO {
 
         try {
             st = conn.prepareStatement(
-                "INSERT INTO evento (" +
-                "nome_evento, desc_evento, data_evento, duracao_evento, local_evento, " +
-                "capacidade_maxima, status_evento, categoria_evento, preco_evento, codigo_organizador" +
-                ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                    "INSERT INTO evento (" +
+                            "nome_evento, desc_evento, data_evento, duracao_evento, local_evento, " +
+                            "capacidade_maxima, status_evento, categoria_evento, preco_evento, codigo_organizador" +
+                            ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
             st.setString(1, evento.getNomeEvento());
             st.setString(2, evento.getDescEvento());
@@ -48,12 +48,11 @@ public class EventoDAO {
 
             return st.executeUpdate();
         } catch (SQLException e) {
-            
+
             throw new SQLException("Erro no cadastrar evento: " + e.getMessage(), e);
         } finally {
-            
+
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
@@ -76,7 +75,6 @@ public class EventoDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
         }
     }
 
@@ -96,7 +94,28 @@ public class EventoDAO {
         } finally {
             BancoDados.finalizarStatement(st);
             BancoDados.finalizarResultSet(rs);
-            BancoDados.desconectar();
+        }
+    }
+
+    public List<Evento> buscarPorStatus(StatusEvento status) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                    "SELECT * FROM evento WHERE status_evento = ? ORDER BY data_evento"
+            );
+            st.setString(1, status.name());
+            rs = st.executeQuery();
+
+            List<Evento> lista = new ArrayList<>();
+            while (rs.next()) {
+                lista.add(mapearEvento(rs));
+            }
+            return lista;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+            //BancoDados.desconectar();
         }
     }
 
@@ -120,7 +139,6 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
@@ -133,7 +151,6 @@ public class EventoDAO {
             return st.executeUpdate();
         } finally {
             BancoDados.finalizarStatement(st);
-            BancoDados.desconectar();
         }
     }
 
@@ -150,11 +167,12 @@ public class EventoDAO {
         evento.setCategoriaEvento(CategoriaEvento.valueOf(rs.getString("categoria_evento")));
         evento.setPrecoEvento(rs.getFloat("preco_evento"));
 
-        //Administrador admin = new Administrador();
-        //admin.setCodigoPessoa(rs.getInt("codigo_pessoa"));
-        evento.getAdministrador().setCodigoPessoa(rs.getInt("codigo_organizador"));
+        Administrador admin = new Administrador();
+        admin.setCodigoPessoa(rs.getInt("codigo_organizador"));
+        evento.setAdministrador(admin);
 
         return evento;
     }
+
 
 }

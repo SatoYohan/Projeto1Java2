@@ -2,7 +2,7 @@ package entities;
 
 public class Pessoa {
 
-	private int codigoPessoa;
+    private int codigoPessoa;
     private String nomeCompleto;
     private String email;
     private String senha;
@@ -21,42 +21,42 @@ public class Pessoa {
 
     public int getCodigoPessoa() {
         return codigoPessoa;
-        
+
     }
 
     public void setCodigoPessoa(int codigoPessoa) {
         this.codigoPessoa = codigoPessoa;
-        
+
     }
 
     public String getNomeCompleto() {
         return nomeCompleto;
-        
+
     }
 
     public void setNomeCompleto(String nomeCompleto) {
         this.nomeCompleto = nomeCompleto;
-        
+
     }
 
     public String getEmail() {
         return email;
-        
+
     }
 
     public void setEmail(String email) {
         this.email = email;
-        
+
     }
 
     public String getSenha() {
         return senha;
-        
+
     }
 
     public void setSenha(String senha) {
         this.senha = senha;
-        
+
     }
 
     public int getIdFuncao() {
