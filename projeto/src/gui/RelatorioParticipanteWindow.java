@@ -63,15 +63,16 @@ public class RelatorioParticipanteWindow extends JFrame {
 	        
 	        for (InscricaoEvento inscricaoEvento : eventos) {
 	            modelo.addRow(new Object[] {
-	                inscricaoEvento.getEvento().getCodigoEvento(),
-	                inscricaoEvento.getEvento().getNomeEvento(),
-	                inscricaoEvento.getEvento().getDescEvento(),
-	                inscricaoEvento.getEvento().getDataEvento(),
-	                inscricaoEvento.getEvento().getDuracaoEvento(),
-	                inscricaoEvento.getEvento().getCapacidadeMaxima(),
-	                inscricaoEvento.getEvento().getStatusEvento(),
-	                inscricaoEvento.getEvento().getCategoriaEvento(),
-	                inscricaoEvento.getEvento().getPrecoEvento()
+		                inscricaoEvento.getEvento().getCodigoEvento(),
+		                inscricaoEvento.getEvento().getNomeEvento(),
+		                inscricaoEvento.getEvento().getDescEvento(),
+		                inscricaoEvento.getEvento().getDataEvento(),
+		                inscricaoEvento.getEvento().getDuracaoEvento(),
+		                inscricaoEvento.getEvento().getLocalEvento(),
+		                inscricaoEvento.getEvento().getCapacidadeMaxima(),
+		                inscricaoEvento.getEvento().getStatusEvento(),
+		                inscricaoEvento.getEvento().getCategoriaEvento(),
+		                inscricaoEvento.getEvento().getPrecoEvento()
 	            });
 	        }
 	    } catch (SQLException | IOException e) {
@@ -101,6 +102,7 @@ public class RelatorioParticipanteWindow extends JFrame {
 	                inscricaoEvento.getEvento().getDescEvento(),
 	                inscricaoEvento.getEvento().getDataEvento(),
 	                inscricaoEvento.getEvento().getDuracaoEvento(),
+	                inscricaoEvento.getEvento().getLocalEvento(),
 	                inscricaoEvento.getEvento().getCapacidadeMaxima(),
 	                inscricaoEvento.getEvento().getStatusEvento(),
 	                inscricaoEvento.getEvento().getCategoriaEvento(),
