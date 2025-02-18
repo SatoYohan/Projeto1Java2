@@ -174,5 +174,27 @@ public class EventoDAO {
         return evento;
     }
 
+    public List<String> buscarEventosPopulares() throws SQLException {
+        List<String> eventosPopulares = new ArrayList<>();
+        String sql = """
+                SELECT e.nomeEvento, COUNT(i.codigoEvento) AS numeroInscricoes
+                FROM Evento e
+                LEFT JOIN InscricaoEvento i ON e.codigoEvento = i.codigoEvento
+                AND i.statusInscricao <> 'Cancelado'
+                GROUP BY e.codigoEvento
+                ORDER BY numeroInscricoes DESC
+                """;
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String eventoInfo = rs.getString("nomeEvento") + " - Inscrições: " + rs.getInt("numeroInscricoes");
+                eventosPopulares.add(eventoInfo);
+            }
+        }
+
+        return eventosPopulares;
+    }
 
 }

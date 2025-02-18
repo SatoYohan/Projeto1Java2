@@ -26,6 +26,12 @@ public class PrincipalWindowAdministrador extends JFrame {
         painel.add(botaoGerenciarEventos);
 
         botaoRelatorios = new JButton("Relatórios");
+        botaoRelatorios.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+                new RelatorioAdministradorWindow().setVisible(true);
+                dispose();
+        	}
+        });
         botaoRelatorios.setBounds(150, 150, 200, 30);
         painel.add(botaoRelatorios);
 
