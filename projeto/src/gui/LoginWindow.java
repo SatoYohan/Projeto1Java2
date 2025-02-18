@@ -1,9 +1,6 @@
 package gui;
 
 import javax.swing.*;
-
-import entities.Participante;
-import entities.SessaoParticipante;
 import service.PessoaService;
 
 import java.awt.HeadlessException;
@@ -25,7 +22,7 @@ public class LoginWindow extends JFrame {
     }
 
     private boolean validarLogin(String email, String senha) throws SQLException, IOException {
-        
+
         return pessoaService.validarCredenciais(email, senha);
     }
 
@@ -79,12 +76,7 @@ public class LoginWindow extends JFrame {
                         new PrincipalWindowAdministrador().setVisible(true);
                         dispose();
                     } else if (idFuncao == 1) {
-                    	
-                    	Participante participanteLogado = pessoaService.buscarParticipantePorEmailSenha(email, senha);
-                    	
                         JOptionPane.showMessageDialog(LoginWindow.this, "Login realizado como Participante " + email + ".");
-                        SessaoParticipante.setParticipanteLogado(participanteLogado);
-                        System.out.println(participanteLogado.getCodigoPessoa());
                         new PrincipalWindowParticipante().setVisible(true);
                         dispose();
                     } else {

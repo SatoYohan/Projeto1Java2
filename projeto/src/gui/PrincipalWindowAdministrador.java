@@ -37,11 +37,11 @@ public class PrincipalWindowAdministrador extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-					new GerenciarEventoWindow().setVisible(true);
-				} catch (SQLException | IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+                    new GerenciarEventoWindow().setVisible(true);
+                } catch (SQLException | IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
                 dispose();
             }
         });

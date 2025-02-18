@@ -36,56 +36,56 @@ public class RelatorioParticipanteWindow extends JFrame {
 
 	public RelatorioParticipanteWindow() {
 		setTitle("Relatório");
-		
+
 		this.iniciarComponentes();
-		
+
 		this.inscricaoEventoService = new InscricaoEventoService();
-		
+
 		this.listarEventosInscritos();
 	}
-	
-	
+
+
 	private void listarHistoricoParticipacao() {
-	    scrollPaneInscritos.setVisible(false);
-	    scrollPaneHistorico.setVisible(true);
+		scrollPaneInscritos.setVisible(false);
+		scrollPaneHistorico.setVisible(true);
 	}
 
 	private void listarEventosInscritos() {
-	    scrollPaneInscritos.setVisible(true);
-	    scrollPaneHistorico.setVisible(false);
+		scrollPaneInscritos.setVisible(true);
+		scrollPaneHistorico.setVisible(false);
 		try {
-			
+
 			DefaultTableModel modelo = (DefaultTableModel) tblInscritos.getModel();
 			modelo.fireTableDataChanged();
 			modelo.setRowCount(0);
-			
+
 			Participante participante = new Participante();
-			List<InscricaoEvento> eventos = this.inscricaoEventoService.buscarEventosPorParticipante(participante.getCodigoPessoa());
-			
-			for (InscricaoEvento inscricaoEvento : eventos) {
-				
+			List<Evento> eventos = this.inscricaoEventoService.buscarEventosPorParticipante(participante.getCodigoPessoa());
+
+			for (Evento evento : eventos) {
+
 				modelo.addRow(new Object[] {
-						
-						inscricaoEvento.getEvento().getCodigoEvento(),
-						inscricaoEvento.getEvento().getNomeEvento(),
-						inscricaoEvento.getEvento().getDescEvento(),
-						inscricaoEvento.getEvento().getDataEvento(),
-						inscricaoEvento.getEvento().getDuracaoEvento(),
-						inscricaoEvento.getEvento().getCapacidadeMaxima(),
-						inscricaoEvento.getEvento().getStatusEvento(),
-						inscricaoEvento.getEvento().getCategoriaEvento(),
-						inscricaoEvento.getEvento().getPrecoEvento(),
-						inscricaoEvento.getEvento().getAdministrador().getCodigoPessoa()
+
+						evento.getCodigoEvento(),
+						evento.getNomeEvento(),
+						evento.getDescEvento(),
+						evento.getDataEvento(),
+						evento.getDuracaoEvento(),
+						evento.getCapacidadeMaxima(),
+						evento.getStatusEvento(),
+						evento.getCategoriaEvento(),
+						evento.getPrecoEvento(),
+						evento.getAdministrador().getCodigoPessoa()
 				});
 			}
 		} catch (SQLException | IOException e) {
-			
+
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	private void iniciarComponentes() {
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -93,7 +93,7 @@ public class RelatorioParticipanteWindow extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JButton btnEventosInscritos = new JButton("Eventos Inscritos");
 		btnEventosInscritos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -102,7 +102,7 @@ public class RelatorioParticipanteWindow extends JFrame {
 		});
 		btnEventosInscritos.setBounds(113, 11, 143, 23);
 		contentPane.add(btnEventosInscritos);
-		
+
 		JButton btnHistorico = new JButton("Histórico de Participação");
 		btnHistorico.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -111,23 +111,23 @@ public class RelatorioParticipanteWindow extends JFrame {
 		});
 		btnHistorico.setBounds(266, 11, 158, 23);
 		contentPane.add(btnHistorico);
-		
+
 		JPanel pnlEventos = new JPanel();
 		pnlEventos.setBorder(new TitledBorder(null, "Eventos", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlEventos.setBounds(0, 69, 434, 192);
 		contentPane.add(pnlEventos);
 		pnlEventos.setLayout(null);
-		
+
 		scrollPaneInscritos = new JScrollPane();
 		scrollPaneInscritos.setBounds(10, 23, 414, 154);
 		pnlEventos.add(scrollPaneInscritos);
-		
+
 		tblInscritos = new JTable();
 		tblInscritos.setModel(new DefaultTableModel(
-		    new Object[][] {},
-		    new String[] {
-		        "Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço", "Organizador"
-		    }
+				new Object[][] {},
+				new String[] {
+						"Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço", "Organizador"
+				}
 		));
 		tblInscritos.getColumnModel().getColumn(6).setPreferredWidth(108);
 		scrollPaneInscritos.setViewportView(tblInscritos);
@@ -138,30 +138,30 @@ public class RelatorioParticipanteWindow extends JFrame {
 
 		tblHistorico = new JTable();
 		tblHistorico.setModel(new DefaultTableModel(
-		    new Object[][] {},
-		    new String[] {
-		        "Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço", "Organizador"
-		    }
+				new Object[][] {},
+				new String[] {
+						"Código", "Nome", "Descrição", "Data", "Duração", "Local", "Capacidade Máxima", "Status", "Categoria", "Preço", "Organizador"
+				}
 		));
 		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
 		scrollPaneHistorico.setViewportView(tblHistorico);
 
-		
+
 		JButton btnVoltar = new JButton("Voltar");
 		btnVoltar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-                new PrincipalWindowParticipante().setVisible(true);
-                dispose();
+				new PrincipalWindowParticipante().setVisible(true);
+				dispose();
 			}
 		});
 		btnVoltar.setBounds(14, 11, 89, 23);
 		contentPane.add(btnVoltar);
-		
+
 		JButton btnExportar = new JButton("Exportar para xls");
 		btnExportar.setBounds(276, 45, 133, 23);
 		contentPane.add(btnExportar);
 		tblHistorico.getColumnModel().getColumn(6).setPreferredWidth(108);
-		
+
 		scrollPaneInscritos.setVisible(true);
 		scrollPaneHistorico.setVisible(false);
 	}
