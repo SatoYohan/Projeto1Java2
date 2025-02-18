@@ -16,7 +16,7 @@ import java.io.IOException;
 public class StatusInscricaoWindow extends JFrame {
 
     private JComboBox<String> comboStatus;
-    private JButton botaoConfirmar;
+    private JButton botaoConfirmar, botaoVoltar;
     private Evento evento;
     private Participante participante;
     private InscricaoEventoService inscricaoEventoService;
@@ -30,34 +30,64 @@ public class StatusInscricaoWindow extends JFrame {
 
     private void inicializarComponentes() {
         setTitle("Selecione o Status da Inscrição");
-        setSize(400, 200);
+        setSize(500, 250); // Ajuste de tamanho
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
-        getContentPane().setLayout(null);
+        setLayout(new BorderLayout());
 
+        // Painel principal
         JPanel painel = new JPanel();
-        painel.setBounds(0, 0, 384, 161);
-        getContentPane().add(painel);
-        painel.setLayout(null);
+        painel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        // Label
         JLabel labelStatus = new JLabel("Selecione o status da inscrição:");
-        labelStatus.setBounds(26, 40, 170, 33);
-        painel.add(labelStatus);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        painel.add(labelStatus, gbc);
 
+        // ComboBox
         comboStatus = new JComboBox<>(new String[]{"PENDENTE_DE_PAGAMENTO", "ATIVA"});
-        comboStatus.setBounds(206, 40, 170, 33);
-        painel.add(comboStatus);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        painel.add(comboStatus, gbc);
 
+        // Botão Confirmar
         botaoConfirmar = new JButton("Confirmar");
-        botaoConfirmar.setBounds(26, 103, 320, 33);
-        painel.add(botaoConfirmar);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        painel.add(botaoConfirmar, gbc);
 
+        // Botão Voltar
+        botaoVoltar = new JButton("Voltar");
+        gbc.gridy = 2;
+        painel.add(botaoVoltar, gbc);
+
+        add(painel, BorderLayout.CENTER);
+
+        // Listeners
         botaoConfirmar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String statusSelecionado = (String) comboStatus.getSelectedItem();
                 StatusInscricao status = StatusInscricao.valueOf(statusSelecionado);
                 inscreverParticipante(status);
+            }
+        });
+
+        botaoVoltar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    new InscricaoEventoWindow().setVisible(true);
+                } catch (SQLException | IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+                dispose();
             }
         });
     }
@@ -75,6 +105,8 @@ public class StatusInscricaoWindow extends JFrame {
 
             JOptionPane.showMessageDialog(this, "Inscrição realizada com sucesso!");
 
+            // Retorna para a tela de inscrição
+            new InscricaoEventoWindow().setVisible(true);
             dispose();
         } catch (SQLException | IOException ex) {
             ex.printStackTrace();
