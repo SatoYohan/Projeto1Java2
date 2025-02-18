@@ -343,6 +343,60 @@ public class InscricaoEventoDAO {
         return inscricao;
     }
 
+    
+    public List<InscricaoEvento> buscarEventosFuturosPorParticipante(int codigoParticipante) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                "SELECT i.codigo_inscricao, i.codigo_participante, i.codigo_evento AS insc_codigo_evento, i.data_inscricao, i.status_inscricao, i.presenca_confirmada, e.* " +
+                "FROM inscricao_evento i " +
+                "INNER JOIN evento e ON i.codigo_evento = e.codigo_evento " +
+                "WHERE i.codigo_participante = ? and e.data_evento > NOW()"
+            );
+            st.setInt(1, codigoParticipante);
+            rs = st.executeQuery();
+
+            List<InscricaoEvento> listaInscricoes = new ArrayList<>();
+            while (rs.next()) {
+                InscricaoEvento inscricao = mapearInscricao2(rs);
+                listaInscricoes.add(inscricao);
+            }
+
+            return listaInscricoes;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.desconectar();
+        }
+    }
+    
+    public List<InscricaoEvento> buscarEventosAntigosPorParticipante(int codigoParticipante) throws SQLException {
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.prepareStatement(
+                "SELECT i.codigo_inscricao, i.codigo_participante, i.codigo_evento AS insc_codigo_evento, i.data_inscricao, i.status_inscricao, i.presenca_confirmada, e.* " +
+                "FROM inscricao_evento i " +
+                "INNER JOIN evento e ON i.codigo_evento = e.codigo_evento " +
+                "WHERE i.codigo_participante = ? and e.data_evento < NOW() "
+            );
+            st.setInt(1, codigoParticipante);
+            rs = st.executeQuery();
+
+            List<InscricaoEvento> listaInscricoes = new ArrayList<>();
+            while (rs.next()) {
+                InscricaoEvento inscricao = mapearInscricao2(rs);
+                listaInscricoes.add(inscricao);
+            }
+
+            return listaInscricoes;
+        } finally {
+            BancoDados.finalizarStatement(st);
+            BancoDados.finalizarResultSet(rs);
+            BancoDados.desconectar();
+        }
+    }
 
 
 }
